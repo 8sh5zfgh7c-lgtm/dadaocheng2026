@@ -820,7 +820,7 @@ function saveTask(id,ansKey,photoKey){
   S[ansKey][id]=ta.value.trim();
   const allT=[...Object.values(STATIONS).flatMap(s=>s.tasks||[]),...VISITOR_TASKS,...FINAL_MAIN];
   const t=allT.find(x=>x.id===id);
-  if(t&&t.pts){S.score+=t.pts;updateScoreDisplay();}
+  if(t&&t.pts&&!S.scored['msg_'+id]){S.score+=t.pts;updateScoreDisplay();S.scored['msg_'+id]=true;}
   markDone(id);
   saveLocal();autoSave();
   toast('✓ 已儲存！');
@@ -839,7 +839,7 @@ function handlePhoto(e,id,ansKey,photoKey){
     if(pa)pa.innerHTML=`<img src="${ev.target.result}" style="width:100%;max-height:200px;object-fit:cover">`;
     const allT=[...Object.values(STATIONS).flatMap(s=>s.tasks||[]),...VISITOR_TASKS,...FINAL_MAIN];
     const t=allT.find(x=>x.id===id);
-    if(t&&t.pts){S.score+=t.pts;updateScoreDisplay();}
+    if(t&&t.pts&&!S.scored['task_'+id]){S.score+=t.pts;updateScoreDisplay();S.scored['task_'+id]=true;}
     markDone(id);
     saveLocal();autoSave();
     toast('📸 照片已儲存！');
@@ -863,7 +863,7 @@ function confirmMessenger(id,ansKey,photoKey){
   S[ansKey][id]='sent';
   const allT=[...Object.values(STATIONS).flatMap(s=>s.tasks||[]),...VISITOR_TASKS,...FINAL_MAIN];
   const t=allT.find(x=>x.id===id);
-  if(t&&t.pts){S.score+=t.pts;updateScoreDisplay();}
+  if(t&&t.pts&&!S.scored['msg_'+id]){S.score+=t.pts;updateScoreDisplay();S.scored['msg_'+id]=true;}
   markDone(id);
   const btn=document.getElementById('mb_'+id);
   if(btn){btn.style.background='#4CAF50';btn.textContent='✓ 已傳送確認';}
@@ -1063,8 +1063,9 @@ function showStationSelect(){
 function pickStation(sel,correct){
   if(sel===correct){
     S.idx++;
-    S.score+=15;updateScoreDisplay();
-    toast('✓ 譯碼官推理正確！+15分');
+    const pickKey='pick_'+sel;
+    if(!S.scored[pickKey]){S.score+=15;updateScoreDisplay();S.scored[pickKey]=true;toast('✓ 譯碼官推理正確！+15分');}
+    else{toast('✓ 推理正確！');}
     setTimeout(()=>showStation(sel),600);
   } else {
     S.wrongs++;S.score=Math.max(0,S.score-5);updateScoreDisplay();
@@ -1208,6 +1209,7 @@ async function submitMission(){
   if(!S.scored.submit){S.score+=30;updateScoreDisplay();S.scored.submit=true;}
   const btn=document.getElementById('btnSubmit');
   const st=document.getElementById('ss');
+  if(S.scored.submit&&S.endTime){toast('已提交過了！');return;}
   btn.disabled=true;btn.textContent='提交中…';
   document.getElementById('btnSubmit').disabled=true;
   const payload={
