@@ -573,8 +573,8 @@ const STATIONS={
        ins:"找到廟內一副對聯，抄寫全文，並分析：\n①使用了哪種修辭？\n②這副對聯想表達什麼？",ph:"對聯全文：\n\n修辭：\n意思：",pts:10},
       {id:"t2",type:"text",ico:"☕",lbl:"引路官任務｜國文科・平安茶摹寫",role:"引路",
        ins:"城隍廟提供免費熱的平安茶，全組每人喝一杯。由引路官負責用文字描述口感——甜度、溫度、入喉後的感覺——寫成一段至少包含三個摹寫詞的句子。",ph:"平安茶的味道：",pts:10},
-      {id:"t3",type:"photo",ico:"📷",lbl:"影相師任務｜廟宇影像",role:"影相",
-       ins:"找一塊廟內你覺得最有意思的匾額或對聯，拍下來上傳。",pts:10},
+      {id:"t3",type:"messenger",ico:"📷",lbl:"影相師任務｜廟宇影像",role:"影相",
+       ins:"找一塊廟內你覺得最有意思的匾額或對聯，拍下來傳送至老師Messenger。",pts:10},
       {id:"t4",type:"text",ico:"🔍",lbl:"勘查司任務｜觀察右邊石獅",role:"勘查",
        ins:"廟門前有一對石獅（站在廟外面向廟門，右手邊是右獅）。仔細觀察右邊的石獅腳下，圍繞著什麼？詳細描述。",ph:"右獅腳下：",pts:10},
       {id:"t5",type:"text",ico:"📚",lbl:"全組任務｜移民信仰歷史題",
@@ -594,8 +594,8 @@ const STATIONS={
        ins:"找到廣場最大的老榕樹，觀察並記錄：\n①樹幹直徑估計（用手臂長度測量）？\n②有幾條主要氣根垂落？\n③樹下的微生態（有什麼生物？）",ph:"直徑估計：\n氣根數量：\n微生態：",pts:10},
       {id:"c2",type:"text",ico:"🍵",lbl:"全組任務｜自然科・茶葉氧化原理",
        ins:"大稻埕以茶葉貿易著名。討論：\n①綠茶和紅茶有什麼差別？\n②哪種茶的氧化程度最高？",ph:"綠茶vs紅茶：\n氧化最高：",pts:10},
-      {id:"c3",type:"photo",ico:"📷",lbl:"影相師任務｜日常生活紀錄",role:"影相",
-       ins:"拍一張「最能代表這個廣場的日常生活」的照片——不是建築，而是人和場景。",pts:10},
+      {id:"c3",type:"messenger",ico:"📷",lbl:"影相師任務｜日常生活紀錄",role:"影相",
+       ins:"拍一張「最能代表這個廣場的日常生活」的照片——不是建築，而是人和場景。拍完傳送至老師Messenger。",pts:10},
       {id:"c4",type:"text",ico:"🗣",lbl:"引路官任務｜訪問記錄",role:"引路",
        ins:"找廣場旁小吃攤的老闆訪問：「您知道以前這附近是碼頭嗎？」記錄他的反應和內容。",ph:"訪問對象：\n他說：",pts:10},
       {id:"c6",type:"clue",ico:"🔑",lbl:"全組任務｜媽祖信仰思考題",
@@ -1260,7 +1260,49 @@ async function loadDash(){
         <div style="font-size:10px;color:#A09070;margin-top:1px">${g.lastUpdated||g.submittedAt||''}</div></div>
         <div style="font-size:10px;color:var(--gold);text-align:right">${done.length}/6站<br>積分${g.score||0}分</div>
       </div>
-      <div class="gcb">${done.map(sid=>{const s=STATIONS[sid];if(!s)return'';const ct=s.tasks.find(t=>t.type==='clue');const ca=ct?(ans[ct.id]||'—'):'—';return `<div class="gsr"><div class="gsl">${s.name}</div><div class="gsa">線索：${ca}</div></div>`;}).join('')}</div>
+      <div class="gcb">${(()=>{
+        const stationOrder=g.stationOrder||[];
+        let html='';
+        // 各站答案
+        stationOrder.forEach(sid=>{
+          const s=STATIONS[sid];
+          if(!s)return;
+          html+=`<div class="gsr"><div class="gsl" style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1px">${s.name}</div>`;
+          s.tasks.forEach(t=>{
+            const val=ans[t.id];
+            if(!val)return;
+            if(val==='sent'){
+              html+=`<div class="gsa" style="color:var(--green)">✓ ${t.lbl}：已傳Messenger</div>`;
+            } else {
+              html+=`<div class="gsa"><span style="color:var(--brown);font-size:10px">${t.lbl}：</span><br>${val}</div>`;
+            }
+          });
+          html+='</div>';
+        });
+        // 遊客中心
+        const vAns=[...Object.entries(ans)].filter(([k])=>k.startsWith('v'));
+        if(vAns.length){
+          html+='<div class="gsr"><div class="gsl" style="color:var(--gold)">遊客中心</div>';
+          vAns.forEach(([k,v])=>{
+            const t=VISITOR_TASKS.find(x=>x.id===k);
+            const lbl=t?t.lbl:k;
+            html+=`<div class="gsa" style="color:var(--green)">✓ ${lbl}：${v==='sent'?'已傳Messenger':v}</div>`;
+          });
+          html+='</div>';
+        }
+        // 迪化街
+        const fAns=[...Object.entries(ans)].filter(([k])=>k.startsWith('f'));
+        if(fAns.length){
+          html+='<div class="gsr"><div class="gsl" style="color:var(--gold)">迪化街</div>';
+          fAns.forEach(([k,v])=>{
+            const t=FINAL_MAIN.find(x=>x.id===k);
+            const lbl=t?t.lbl:k;
+            html+=`<div class="gsa"><span style="color:var(--brown);font-size:10px">${lbl}：</span><br>${v==='sent'?'✓ 已傳Messenger':v}</div>`;
+          });
+          html+='</div>';
+        }
+        return html||'<p style="font-size:12px;color:var(--brown2)">尚無作答</p>';
+      })()}</div>
     </div>`;
   }).join('');
   renderScores(groups);
