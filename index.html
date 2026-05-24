@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>1924大稻埕商行偵查</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+:root{--paper:#F0E0B8;--paper2:#E8D4A0;--ink:#2A1A08;--red:#8B1A1A;--brown:#5C3310;--brown2:#8B5E3C;--gold:#9B7A20;--cream:#FDF6E3;--green:#2D5A27;--blue:#1A3A5C;--teal:#1A4A4A}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Noto Serif TC',serif;background:var(--paper);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-text-size-adjust:100%}
+.screen{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+/* Buttons */
+.btn-p{background:var(--red);color:var(--cream);border:none;padding:15px;font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;letter-spacing:3px;cursor:pointer;width:100%;transition:all .2s;box-shadow:0 4px 14px rgba(139,26,26,.35)}
+.btn-p:active{transform:scale(.97)}
+.btn-s{background:transparent;color:var(--brown2);border:1px solid var(--brown2);padding:12px;font-family:'Noto Sans TC',sans-serif;font-size:13px;cursor:pointer;width:100%;margin-top:10px}
+.btn-gold{background:var(--gold);color:var(--ink);border:none;padding:14px;font-family:'Noto Serif TC',serif;font-size:15px;font-weight:700;letter-spacing:2px;cursor:pointer;width:100%}
+/* Layout */
+.padded{padding:24px 20px 120px}
+.ph{text-align:center;margin-bottom:24px}
+.ph h2{font-size:24px;font-weight:700;margin-bottom:5px}
+.ph p{font-size:13px;color:var(--brown2);line-height:1.7}
+.card{background:var(--cream);border:1px solid var(--brown2);padding:16px;margin-bottom:16px}
+.ct{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--brown);margin-bottom:12px;font-family:'Noto Sans TC',sans-serif;border-bottom:1px solid var(--paper2);padding-bottom:8px}
+.lbl{font-size:12px;font-weight:700;color:var(--brown);margin-bottom:6px;display:block;font-family:'Noto Sans TC',sans-serif;letter-spacing:1px}
+.inp{width:100%;background:var(--cream);border:1.5px solid var(--brown2);padding:12px 14px;font-family:'Noto Serif TC',serif;font-size:16px;color:var(--ink);outline:none;margin-bottom:14px;border-radius:0;-webkit-appearance:none}
+.inp:focus{border-color:var(--red)}
+textarea.inp{resize:vertical;min-height:80px;margin-bottom:0;font-size:16px}
+.info{background:#FFF8E8;border:1px solid var(--gold);padding:12px;margin-bottom:14px;font-size:12px;line-height:1.8;color:var(--brown)}
+.info strong{color:var(--red)}
+/* Intro */
+#intro{background:var(--ink);color:var(--paper);align-items:center;justify-content:center;text-align:center;padding:40px 24px}
+#intro::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,#4A2C10 0%,#0F0600 75%)}
+.ii{position:relative;z-index:2;max-width:380px;width:100%}
+.ibadge{display:inline-block;border:1.5px solid var(--gold);color:var(--gold);font-size:10px;letter-spacing:3px;padding:5px 14px;margin-bottom:24px;font-family:'Noto Sans TC',sans-serif}
+.ititle{font-size:38px;font-weight:900;line-height:1.2;margin-bottom:6px}
+.isub{font-size:14px;color:var(--paper2);margin-bottom:28px;letter-spacing:2px}
+.idiv{width:50px;height:1px;background:var(--gold);margin:0 auto 24px}
+.istory{font-size:14px;line-height:2;color:#D4C4A0;margin-bottom:36px;text-align:left}
+.istory em{color:var(--gold);font-style:normal}
+.tbtn{position:absolute;top:16px;right:16px;z-index:10;background:transparent;border:1px solid rgba(240,224,184,.2);color:rgba(240,224,184,.4);font-size:10px;padding:6px 11px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;letter-spacing:1px}
+/* Route */
+.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.route-card{background:var(--paper);border:2px solid var(--brown2);padding:14px;cursor:pointer;text-align:center;transition:all .2s}
+.route-card.sel{border-color:var(--gold);background:#FFF9E8}
+.route-name{font-size:20px;font-weight:900;color:var(--red);margin-bottom:6px}
+/* Roles */
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.role-card{background:var(--paper);border:2px solid var(--brown2);padding:10px;cursor:pointer;position:relative}
+.role-card.sel{border-color:var(--gold);background:#FFF9E8}
+.role-ico{font-size:20px;margin-bottom:3px}
+.role-name{font-size:12px;font-weight:700;color:var(--brown)}
+.role-duty{font-size:10px;color:var(--brown2);margin-top:2px;line-height:1.4;font-family:'Noto Sans TC',sans-serif}
+.role-chk{position:absolute;top:5px;right:7px;color:var(--gold);font-size:13px;display:none}
+.role-card.sel .role-chk{display:block}
+.member-row{display:flex;gap:7px;margin-bottom:8px;align-items:center}
+.member-row .inp{margin-bottom:0;flex:1}
+.mn{width:28px;height:28px;border-radius:50%;background:var(--brown);color:var(--cream);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-family:'Noto Sans TC',sans-serif}
+/* Station */
+#station{background:var(--paper);padding-bottom:110px;padding-top:12px}
+.sta-hdr{background:var(--ink);color:var(--paper);padding:20px 16px 18px;position:relative}
+.sta-hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--red),var(--gold),var(--red))}
+.sta-prog{display:flex;gap:5px;margin-bottom:12px}
+.pdot{flex:1;height:3px;background:rgba(240,224,184,.18);transition:background .4s}
+.pdot.done{background:var(--gold)}.pdot.active{background:var(--paper)}
+.sta-num{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:3px;font-family:'Noto Sans TC',sans-serif}
+.sta-name{font-size:22px;font-weight:900}
+.sta-sub{font-size:12px;color:#C4A870;margin-top:3px}
+.subj-tag{display:inline-block;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:2px;margin-top:7px;font-family:'Noto Sans TC',sans-serif}
+.tag-math{background:var(--blue);color:#A8C8F0}
+.tag-ch{background:var(--red);color:#F0C0C0}
+.tag-sci{background:var(--teal);color:#A8F0F0}
+.tag-soc{background:#5A3A80;color:#D0A8F0}
+.tag-int{background:#4A3A10;color:#F0D880}
+/* Role badges */
+.role-row{display:flex;gap:5px;flex-wrap:wrap;padding:9px 14px;background:rgba(42,26,8,.06);border-bottom:1px solid var(--paper2)}
+.rbadge{display:flex;align-items:center;gap:3px;font-size:10px;background:var(--ink);color:var(--paper);padding:3px 7px;font-family:'Noto Sans TC',sans-serif}
+.rbadge.hi{background:var(--gold);color:var(--ink);font-weight:700}
+/* Story */
+.story-card{margin:12px 14px;background:var(--ink);color:var(--paper);padding:16px;border-left:3px solid var(--gold)}
+.slbl{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;font-family:'Noto Sans TC',sans-serif}
+.stxt{font-size:13px;line-height:2;color:#D4C4A0;word-break:break-all}
+/* Reading */
+.rc{margin:0 14px 12px;background:var(--cream);border:1px solid var(--brown2);overflow:hidden}
+.rtog{padding:12px 13px;display:flex;align-items:center;gap:8px;cursor:pointer;background:var(--paper2)}
+.rtog-lbl{flex:1;font-size:12px;font-weight:700;color:var(--brown);font-family:'Noto Sans TC',sans-serif}
+.rtog-hint{font-size:11px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif}
+.rbody{display:none;padding:14px}
+.rbody.open{display:block}
+.rsrc{font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:8px;font-family:'Noto Sans TC',sans-serif}
+.rexc{font-size:14px;line-height:2.1;border-left:3px solid var(--gold);padding-left:11px;margin-bottom:11px;white-space:pre-line}
+.rnote{font-size:12px;line-height:1.9;color:var(--brown2);background:var(--paper);padding:9px 11px;border-left:2px solid var(--brown2)}
+.rq{margin-top:11px;padding:10px;background:#FFF5E0;border:1px dashed var(--gold);font-size:12px;line-height:1.8;color:var(--brown)}
+.screenshot-tip{background:rgba(155,122,32,.12);border:1px solid var(--gold);padding:9px 11px;margin-top:10px;font-size:11px;color:var(--brown);font-family:'Noto Sans TC',sans-serif}
+/* Tasks */
+.tc{padding:0 14px}
+.task{background:var(--cream);border:1px solid var(--brown2);margin-bottom:11px;overflow:hidden}
+.task.done{border-color:var(--gold)}
+.task.clue{background:#FFFBF5}
+/* Task header - 點擊展開 */
+.task-hdr{padding:11px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.task-hdr:active{background:rgba(0,0,0,.03)}
+.tico{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;pointer-events:none}
+.task.done .tico{background:var(--gold)}
+.task.clue .tico{background:var(--red)}
+.tlbl{font-size:12px;font-weight:700;color:var(--brown);font-family:'Noto Sans TC',sans-serif;flex:1;line-height:1.4;pointer-events:none}
+.tsta{font-size:10px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif;pointer-events:none}
+.task.done .tsta{color:var(--gold)}
+.tbody{display:none;padding:0 12px 12px}
+.tbody.open{display:block}
+.tins{font-size:13px;line-height:1.9;color:var(--ink);margin-bottom:11px;background:var(--paper);padding:10px;border-left:2px solid var(--brown2);word-break:break-all;overflow-wrap:break-word;white-space:pre-line}
+.task.clue .tins{border-left-color:var(--red)}
+.rnote2{font-size:11px;color:var(--blue);background:rgba(26,58,92,.08);padding:6px 10px;margin-bottom:10px;font-family:'Noto Sans TC',sans-serif}
+.pts-badge{font-size:11px;color:var(--gold);font-family:'Noto Sans TC',sans-serif;margin-bottom:8px}
+.bsave{width:100%;margin-top:10px;background:var(--ink);color:var(--paper);border:none;padding:11px;font-family:'Noto Serif TC',serif;font-size:13px;letter-spacing:2px;cursor:pointer}
+/* Messenger confirm */
+.msg-box{background:#E8F4FD;border:1px solid #90CAF9;padding:14px;margin-bottom:10px}
+.msg-label{font-size:12px;color:#1565C0;margin-bottom:6px;font-family:'Noto Sans TC',sans-serif}
+.msg-warn{font-size:11px;color:#1976D2;font-family:'Noto Sans TC',sans-serif}
+.btn-messenger{width:100%;color:white;border:none;padding:12px;font-family:'Noto Serif TC',serif;font-size:14px;cursor:pointer;letter-spacing:1px}
+/* Know */
+.kc{margin:6px 14px 14px;background:var(--ink);color:var(--paper)}
+.kl{padding:16px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ku{display:none;padding:16px}
+.ku.show{display:block}
+.kl.hide{display:none}
+.kwlbl{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;font-family:'Noto Sans TC',sans-serif}
+.kwbar{height:2px;background:linear-gradient(to right,var(--red),var(--gold));margin-bottom:11px}
+.kwtitle{font-size:15px;font-weight:700;margin-bottom:9px}
+.kwtext{font-size:12px;line-height:2;color:#D4C4A0}
+/* Food */
+.food-card{margin:0 14px 12px;background:var(--paper2);border:1px dashed var(--brown2);overflow:hidden}
+.ftog{padding:10px 13px;display:flex;align-items:center;gap:7px;cursor:pointer}
+.ftog-lbl{flex:1;font-size:11px;font-weight:700;color:var(--brown);font-family:'Noto Sans TC',sans-serif}
+.fbody{display:none;padding:10px 13px 13px;font-size:12px;line-height:1.9;color:var(--brown)}
+.fbody.open{display:block}
+/* Complete btn */
+.btn-done{margin:14px 14px 16px;width:calc(100% - 28px);background:var(--brown2);color:var(--cream);border:none;padding:16px;font-family:'Noto Serif TC',serif;font-size:15px;font-weight:700;letter-spacing:3px;cursor:pointer}
+.btn-done:not(:disabled){background:var(--red);box-shadow:0 4px 12px rgba(139,26,26,.3)}
+.botnav{position:fixed;bottom:0;left:0;right:0;background:var(--ink);padding:10px 14px;padding-bottom:max(14px,env(safe-area-inset-bottom));display:flex;gap:7px;z-index:50;border-top:1px solid var(--brown)}
+.nbtn{flex:1;padding:9px;background:transparent;border:1px solid var(--brown);color:var(--brown2);font-family:'Noto Sans TC',sans-serif;font-size:11px;cursor:pointer}
+/* Clue reveal */
+#clue-reveal{background:var(--ink);color:var(--paper);align-items:center}
+#clue-reveal::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 30%,#3A2010 0%,#080300 80%)}
+.cr-in{position:relative;z-index:2;max-width:400px;width:100%;margin:0 auto;padding:44px 22px 80px}
+.cr-badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);font-size:10px;letter-spacing:3px;padding:4px 12px;margin-bottom:18px;font-family:'Noto Sans TC',sans-serif}
+.cr-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.cr-sub{font-size:12px;color:#A09070;margin-bottom:22px}
+.cr-scroll{background:rgba(240,224,184,.05);border:1px solid rgba(240,224,184,.18);padding:18px;margin-bottom:20px;border-left:3px solid var(--gold)}
+.cr-slbl{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:9px;font-family:'Noto Sans TC',sans-serif}
+.cr-text{font-size:14px;line-height:2.2;color:#E0CCAA;white-space:pre-line;word-break:break-all}
+.cr-hint{background:rgba(139,26,26,.22);border:1px solid var(--red);padding:12px;margin-bottom:18px;display:none}
+.cr-hint.show{display:block}
+.cr-hlbl{font-size:10px;letter-spacing:2px;color:#FF9090;margin-bottom:6px;font-family:'Noto Sans TC',sans-serif}
+.cr-htxt{font-size:12px;line-height:1.9;color:#E0A0A0}
+.btn-cr{width:100%;background:var(--gold);color:var(--ink);border:none;padding:14px;font-family:'Noto Serif TC',serif;font-size:14px;font-weight:700;letter-spacing:3px;cursor:pointer}
+/* Station select */
+#station-select{background:var(--paper);padding-bottom:80px}
+.sel-hdr{background:var(--ink);color:var(--paper);padding:22px 16px}
+.sel-title{font-size:20px;font-weight:900;margin-bottom:4px}
+.sel-sub{font-size:12px;color:#A09070}
+.sel-cards{padding:16px 14px;display:flex;flex-direction:column;gap:10px}
+.oc{background:var(--cream);border:2px solid var(--brown2);padding:14px;cursor:pointer;position:relative}
+.oc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brown2)}
+.oc.wrong{border-color:var(--red);animation:shake .3s ease}
+.oc.wrong::before{background:var(--red)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.oc-num{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;font-family:'Noto Sans TC',sans-serif}
+.oc-desc{font-size:13px;line-height:1.8;color:var(--ink)}
+.oc-sub{font-size:11px;color:var(--brown2);margin-top:4px;font-family:'Noto Sans TC',sans-serif}
+.oc-wh{font-size:11px;color:var(--red);margin-top:6px;display:none;font-family:'Noto Sans TC',sans-serif;line-height:1.6}
+.oc.wrong .oc-wh{display:block}
+.gi{text-align:center;padding:8px 14px;font-size:12px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif}
+/* Visitor */
+#visitor{background:var(--paper);padding-bottom:110px;padding-top:12px}
+.checkin-banner{margin:14px;background:var(--red);color:var(--cream);padding:20px;text-align:center}
+.checkin-title{font-size:18px;font-weight:700;margin-bottom:8px}
+.checkin-sub{font-size:13px;opacity:.8}
+.btn-checkin{background:var(--gold);color:var(--ink);border:none;padding:16px;font-family:'Noto Serif TC',serif;font-size:16px;font-weight:700;letter-spacing:2px;cursor:pointer;width:100%;margin-top:12px}
+.checkin-done{background:var(--green);color:var(--cream);padding:12px;text-align:center;font-size:14px;margin-top:10px;display:none}
+.checkin-done.show{display:block}
+.rank-display{font-size:28px;font-weight:900;margin-bottom:4px}
+.rank-pts{font-size:14px;color:#A0F0A0}
+/* Final */
+#final{background:var(--paper);padding-bottom:110px;padding-top:12px}
+.score-num{font-size:40px;font-weight:900;color:var(--gold)}
+.score-lbl{font-size:12px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif}
+.ss{font-size:12px;color:var(--brown2);margin-top:9px;font-family:'Noto Sans TC',sans-serif}
+.ss.ok{color:#80C080}.ss.err{color:#FF8080}
+/* Teacher */
+#teacher,#teacher-config,#teacher-login{background:var(--paper)}
+.teacher-hdr{background:var(--brown);color:var(--cream);padding:20px 16px}
+.teacher-hdr h2{font-size:19px;font-weight:900;margin-bottom:3px}
+.teacher-hdr p{font-size:11px;color:#D4B890}
+.ttabs{display:flex;border-bottom:2px solid var(--brown2)}
+.ttab{flex:1;padding:12px;background:transparent;border:none;font-family:'Noto Sans TC',sans-serif;font-size:12px;cursor:pointer;color:var(--brown2);border-bottom:2px solid transparent;margin-bottom:-2px}
+.ttab.active{color:var(--red);border-bottom-color:var(--red);font-weight:700}
+.tpanel{display:none;padding:12px}
+.tpanel.active{display:block}
+.gc{background:var(--cream);border:1px solid var(--brown2);margin-bottom:11px;overflow:hidden}
+.gc-hdr{background:var(--ink);color:var(--paper);padding:12px 13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.gcb{display:none;padding:12px}
+.gcb.open{display:block}
+.gsr{margin-bottom:11px;border-bottom:1px solid var(--paper2);padding-bottom:11px}
+.gsl{font-size:10px;letter-spacing:2px;color:var(--gold);font-family:'Noto Sans TC',sans-serif;margin-bottom:4px}
+.gsa{font-size:12px;color:var(--ink);line-height:1.7}
+.score-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--paper2)}
+.score-btn{background:var(--red);color:var(--cream);border:none;padding:5px 10px;font-size:11px;cursor:pointer;font-family:'Noto Sans TC',sans-serif}
+.score-btn.give{background:var(--green)}
+/* Advisor popup */
+.apop{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:20px}
+.apop.show{display:flex}
+.abox{background:var(--ink);border:1px solid var(--gold);max-width:340px;width:100%;padding:22px;position:relative}
+.albl{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:11px;font-family:'Noto Sans TC',sans-serif}
+.atxt{font-size:14px;line-height:2;color:#E0CCAA;margin-bottom:16px;white-space:pre-line}
+.aclose{width:100%;background:var(--gold);color:var(--ink);border:none;padding:11px;font-family:'Noto Serif TC',serif;font-size:14px;font-weight:700;cursor:pointer}
+/* Toast */
+.toast{position:fixed;bottom:75px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 20px;font-size:13px;z-index:400;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;border-left:3px solid var(--gold);max-width:90vw;overflow:hidden}
+.toast.show{opacity:1}
+.fade-in{animation:fi .45s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* Final code */
+.final-code-box{background:var(--ink);color:var(--paper);padding:20px;margin-bottom:16px}
+.final-code-lbl{font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:10px;font-family:'Noto Sans TC',sans-serif}
+.final-code-story{font-size:13px;line-height:2;color:#D4C4A0;margin-bottom:14px}
+.final-code-result{font-size:13px;margin-top:10px;text-align:center;display:none}
+</style>
+</head>
+<body>
+
+<!-- Advisor Popup -->
+<div class="apop" id="advisorPop">
+  <div class="abox fade-in">
+    <div class="albl">⚠ 資深顧問來電</div>
+    <p class="atxt" id="advisorTxt"></p>
+    <button class="aclose" onclick="closeAdvisor()">收到，繼續執行任務</button>
+  </div>
+</div>
+
+<!-- Advisor Send Modal -->
+<div class="apop" id="advisorSendPop">
+  <div class="abox fade-in">
+    <div class="albl">顧問發送訊息給所有組別</div>
+    <select class="inp" id="advSel" style="margin-bottom:10px">
+      <option value="">選擇預設訊息…</option>
+      <option value="時空亂流干擾！引路官，立刻傳送冷笑話到群組補充能量！">⚡ 時空亂流</option>
+      <option value="大掌櫃，商號要興旺，人和比地利重要。這組的時空能量在流失喔？">⚠ 提醒合作</option>
+      <option value="時空隧道即將關閉！15:00前請完成迪化街任務，14:30前請歸還旗袍！">⏰ 時空崩塌警告</option>
+    </select>
+    <textarea class="inp" id="advCustom" placeholder="或輸入自訂訊息…" rows="3"></textarea>
+    <button class="btn-gold" onclick="sendAdvisorMsg()" style="margin-bottom:8px">發送給所有組別</button>
+    <button class="btn-s" onclick="document.getElementById('advisorSendPop').classList.remove('show')">取消</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+  <button class="tbtn" onclick="showTeacherEntry()">顧問入口</button>
+  <div class="ii fade-in">
+    <div class="ibadge">大正十三年 ✦ 大稻埕商行</div>
+    <h1 class="ititle">1924<br>商行偵查</h1>
+    <p class="isub">五大職位・四大商行・一場謎局</p>
+    <div class="idiv"></div>
+    <p class="istory">
+      時空傳送失敗，你們被困在1924年的大稻埕。<br><br>
+      這一年，大稻埕最富有的茶葉商人<em>陳員外</em>突然失蹤，留下一份謎樣的遺書，碎片分散藏在大稻埕各地。據說，找齊所有碎片、解開密碼，才能開啟回歸2026年的時空通道。<br><br>
+      資深顧問<em>（老師）</em>體力不支，需要你們組成的特務商行完成六大偵查任務。<br><br>
+      <em>各司其職，方能解開謎局。大掌櫃，帶領你的商行出發吧。</em>
+    </p>
+    <button class="btn-p" onclick="showSetup()">接受任務</button>
+  </div>
+</div>
+
+<!-- TEACHER CONFIG -->
+<div id="teacher-config" class="screen padded">
+  <div class="ph fade-in"><h2>顧問後台設定</h2></div>
+  <div class="card">
+    <label class="lbl">Firebase 資料庫網址</label>
+    <input class="inp" id="cfgUrl" placeholder="https://your-project.firebaseio.com" type="url">
+    <label class="lbl">課程代碼</label>
+    <input class="inp" id="cfgSid" placeholder="dadaocheng2026" maxlength="20">
+    <label class="lbl">顧問密碼</label>
+    <input class="inp" id="cfgPw" placeholder="設定密碼" type="password">
+  </div>
+  <button class="btn-p" onclick="saveConfig()">儲存設定</button>
+  <button class="btn-s" onclick="showScreen('intro')">返回</button>
+</div>
+
+<!-- TEACHER LOGIN -->
+<div id="teacher-login" class="screen padded">
+  <div class="ph"><h2>顧問後台</h2></div>
+  <div class="card"><label class="lbl">顧問密碼</label><input class="inp" id="loginPw" type="password"></div>
+  <button class="btn-p" onclick="doLogin()">進入後台</button>
+  <button class="btn-s" onclick="showScreen('intro')">返回</button>
+</div>
+
+<!-- SETUP -->
+<div id="setup" class="screen padded">
+  <div class="ph fade-in"><h2>商行組建</h2><p>選擇路線・分配職位・確認成員</p></div>
+  <div class="card fade-in">
+    <div class="ct">路線選擇（剪刀石頭布決定）</div>
+    <div class="route-grid" id="routeGrid"></div>
+  </div>
+  <div class="card fade-in">
+    <div class="ct">商行名稱</div>
+    <input class="inp" id="groupName" placeholder="例：茶源商行" maxlength="16">
+  </div>
+  <div class="card fade-in">
+    <div class="ct">人數設定</div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <button id="btn5" onclick="setCount(5)" style="flex:1;padding:12px;border:2px solid var(--gold);background:#FFF9E8;font-family:'Noto Serif TC',serif;font-size:15px;cursor:pointer;color:var(--brown);font-weight:700">5人組</button>
+      <button id="btn6" onclick="setCount(6)" style="flex:1;padding:12px;border:2px solid var(--brown2);background:var(--paper);font-family:'Noto Serif TC',serif;font-size:15px;cursor:pointer;color:var(--brown)">6人組</button>
+    </div>
+    <div class="ct">職位分配</div>
+    <p style="font-size:11px;color:var(--brown2);margin-bottom:11px;font-family:'Noto Sans TC',sans-serif">點選職位後填入成員座號</p>
+    <div class="role-grid" id="roleGrid"></div>
+    <div style="margin-top:12px" id="memberFields"></div>
+  </div>
+  <button class="btn-p" onclick="startMission()">商行出發！</button>
+</div>
+
+<!-- STATION -->
+<div id="station" class="screen">
+  <div class="sta-hdr">
+    <div class="sta-prog" id="staProg"></div>
+    <div class="sta-num" id="staNum"></div>
+    <div class="sta-name" id="staName"></div>
+    <div class="sta-sub" id="staSub"></div>
+    <div id="subjTag"></div>
+  </div>
+  <div class="role-row" id="roleBadges"></div>
+  <div class="story-card fade-in"><div class="slbl">資深顧問情報</div><p class="stxt" id="storyTxt"></p></div>
+  <div class="rc">
+    <div class="rtog" onclick="toggleRead()"><span style="font-size:14px">📜</span><div class="rtog-lbl">本站必讀文本</div><div class="rtog-hint" id="rh">展開 ▾</div></div>
+    <div class="rbody" id="rb">
+      <div class="rsrc" id="rsrc"></div>
+      <div class="rexc" id="rexc"></div>
+      <div class="rnote" id="rnote"></div>
+      <div class="rq" id="rq"></div>
+      <div class="screenshot-tip">📸 大掌櫃：請截圖本頁文本，任務結束後傳給所有組員，供學習單回家填寫使用。</div>
+    </div>
+  </div>
+  <div class="tc" id="tasksC"></div>
+  <div class="food-card" id="foodCard">
+    <div class="ftog" onclick="toggleFood()"><span style="font-size:14px">🍜</span><div class="ftog-lbl">附近補給情報</div><span style="font-size:11px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif" id="fh">展開 ▾</span></div>
+    <div class="fbody" id="fb"></div>
+  </div>
+  <div class="kc" id="kc">
+    <div class="kl" id="kl"><div style="font-size:22px">🔒</div><div style="font-size:12px;color:#A09070">完成所有任務後解鎖知識卡</div></div>
+    <div class="ku" id="ku"><div class="kwlbl">知識解鎖</div><div class="kwbar"></div><div class="kwtitle" id="kwt"></div><div class="kwtext" id="kwc"></div></div>
+  </div>
+  <button class="btn-done" id="btnDone" onclick="tryCompleteStation()" disabled><span id="btnTxt">請完成所有任務</span></button>
+  <div class="botnav">
+    <button class="nbtn" onclick="goBack()">← 上一站</button>
+    <button class="nbtn" id="navProg">0/6</button>
+  </div>
+</div>
+
+<!-- CLUE REVEAL -->
+<div id="clue-reveal" class="screen">
+  <div class="cr-in fade-in">
+    <div class="cr-badge" id="crBadge">第1站完成</div>
+    <h2 class="cr-title">發現遺書碎片</h2>
+    <p class="cr-sub">陳員外留下了下一個商行的線索</p>
+    <div class="cr-scroll"><div class="cr-slbl">遺書密文</div><p class="cr-text" id="crText"></p></div>
+    <div class="cr-hint" id="crHint"><div class="cr-hlbl">額外提示</div><p class="cr-htxt" id="crHintTxt"></p></div>
+    <button class="btn-cr" onclick="showStationSelect()">我知道下一個商行了 →</button>
+  </div>
+</div>
+
+<!-- STATION SELECT -->
+<div id="station-select" class="screen">
+  <div class="sel-hdr"><div class="sel-title">推理下一站</div><div class="sel-sub">譯碼官，根據密文推理下一個地點</div></div>
+  <div class="gi" id="gi"></div>
+  <div class="sel-cards" id="selCards"></div>
+</div>
+
+<!-- VISITOR -->
+<div id="visitor" class="screen">
+  <div class="sta-hdr" style="padding-top:12px">
+    <div class="sta-prog" id="visitorProg"></div>
+    <div class="sta-num">第 5 站 · 共 6 站</div>
+    <div class="sta-name">大稻埕遊客中心</div>
+    <div class="sta-sub">換裝解謎・影像留念</div>
+  </div>
+  <div style="padding:0 14px;margin-top:14px;padding-bottom:120px">
+    <div class="checkin-banner">
+      <div class="checkin-title">🏮 抵達遊客中心</div>
+      <div class="checkin-sub">按下報到按鈕，記錄抵達時間</div>
+      <button class="btn-checkin" id="btnCheckin" onclick="doCheckin()">📍 商行正式報到</button>
+      <div class="checkin-done" id="checkinDone">
+        <div class="rank-display" id="rankDisplay">-</div>
+        <div class="rank-pts" id="rankPts">報到積分：+0分</div>
+        <div style="font-size:12px;color:#D4C4A0;margin-top:6px" id="checkinTime"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">換裝謎題｜通關密碼</div>
+      <div style="font-size:13px;line-height:2;color:var(--ink)">
+        前往<strong>2樓生藥舖</strong>：<br>
+        ① 數清楚藥櫃共有幾個（大小都算）<br>
+        ② 計算「永樂」二字總筆畫數（永＝5畫，樂＝15畫）<br>
+        ③ <strong>兩數相乘</strong>，即為換裝通關密碼
+      </div>
+      <div style="margin-top:12px">
+        <label class="lbl">回報通關密碼</label>
+        <input class="inp" id="puzzleAns" placeholder="輸入計算結果" type="number">
+        <button class="bsave" onclick="checkPuzzle()">驗證密碼</button>
+        <div id="puzzleResult" style="font-size:13px;margin-top:8px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">歸還時間表</div>
+      <div style="font-size:13px;line-height:2;color:var(--ink)">
+        <span style="color:var(--red);font-weight:700">第1、2名報到組：14:30前歸還</span><br>
+        <span style="color:var(--red);font-weight:700">第3、4名報到組：14:45前歸還</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">📸 階段一｜先拍現代服（換裝前）</div>
+      <div style="font-size:12px;color:var(--red);margin-bottom:12px;font-family:'Noto Sans TC',sans-serif">⚠️ 先拍現代服，傳完才能去換旗袍！</div>
+      <div id="visitorTasksPre"></div>
+    </div>
+    <div id="qipaoPhaseCard" style="display:none" class="card">
+      <div class="ct">📸 階段二｜換上旗袍後拍攝</div>
+      <div id="visitorTasksPost"></div>
+    </div>
+    <button class="btn-p" id="btnUnlockQipao" style="display:none;margin-bottom:12px" onclick="unlockQipaoPhase()">✓ 現代服已拍完，開始換旗袍 →</button>
+    <button class="btn-p" onclick="completeVisitor()">完成遊客中心，前往迪化街 →</button>
+  </div>
+  <div class="botnav">
+    <button class="nbtn" onclick="goBack()">← 上一站</button>
+    <button class="nbtn">5/6</button>
+  </div>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="screen">
+  <div class="sta-hdr" style="padding-top:12px">
+    <div class="sta-prog" id="finalProg"></div>
+    <div class="sta-num">第 6 站 · 最終站</div>
+    <div class="sta-name">迪化街</div>
+    <div class="sta-sub">穿著旗袍・輕鬆探索</div>
+  </div>
+  <div style="padding:14px;padding-bottom:120px">
+    <div class="card">
+      <div class="ct">📸 迪化街拍照任務</div>
+      <div id="finalMainTasks"></div>
+    </div>
+    <div class="card">
+      <div class="final-code-box">
+        <div class="final-code-lbl">🔐 終極密碼・開啟回歸通道</div>
+        <p class="final-code-story">陳員外遺書最後寫道：<br>「回到那個讓一切開始的年份，通道即開。」</p>
+        <input class="inp" id="finalCode" type="number" placeholder="輸入四位數年份" style="background:rgba(255,255,255,.1);color:var(--ink)">
+        <button onclick="checkFinalCode()" class="btn-gold" style="margin-top:4px">確認密碼</button>
+        <div class="final-code-result" id="finalCodeResult"></div>
+      </div>
+      <div class="ct">計時結束・提交</div>
+      <div style="text-align:center;padding:12px 0">
+        <div class="score-num" id="finalScore">0</div>
+        <div class="score-lbl">目前積分</div>
+      </div>
+      <button class="btn-p" id="btnSubmit" onclick="submitMission()">停止計時・提交給顧問</button>
+      <div class="ss" id="ss"></div>
+    </div>
+  </div>
+  <div class="botnav">
+    <button class="nbtn" onclick="goBack()">← 上一站</button>
+    <button class="nbtn">6/6</button>
+  </div>
+</div>
+
+<!-- TEACHER -->
+<div id="teacher" class="screen">
+  <div class="teacher-hdr"><h2>顧問後台</h2><p id="tsLbl"></p></div>
+  <div class="ttabs">
+    <button class="ttab active" onclick="switchTab('subs',this)">各組作答</button>
+    <button class="ttab" onclick="switchTab('scores',this)">積分管理</button>
+    <button class="ttab" onclick="showAdvisorSend()">發訊息</button>
+    <button class="ttab" onclick="showScreen('intro')">離開</button>
+  </div>
+  <div class="tpanel active" id="panel-subs">
+    <button onclick="loadDash()" style="width:100%;padding:10px;background:var(--cream);border:1px solid var(--brown2);font-family:'Noto Sans TC',sans-serif;font-size:12px;cursor:pointer;margin-bottom:12px;color:var(--brown)">↻ 重新整理</button>
+    <div id="subsC"></div>
+  </div>
+  <div class="tpanel" id="panel-scores"><div id="scoresC"></div></div>
+</div>
+
+<script>
+// ══ CONFIG ══
+let CFG={url:localStorage.getItem('_fbUrl')||'',sid:localStorage.getItem('_fbSid')||'dadaocheng2026',pw:localStorage.getItem('_fbPw')||'advisor2026'};
+
+// ══ ROUTES ══
+const ROUTES={
+  A:{stations:['beimen','temple','ciSheng','tenRow','visitor','dihua']},
+  B:{stations:['beimen','tenRow','ciSheng','temple','visitor','dihua']},
+  C:{stations:['beimen','temple','tenRow','ciSheng','visitor','dihua']},
+  D:{stations:['beimen','ciSheng','tenRow','temple','visitor','dihua']},
+};
+
+// ══ ROLES ══
+const ROLES=[
+  {id:'掌櫃',name:'大掌櫃',ico:'👑',duty:'領導商行、統籌決策、向顧問回報'},
+  {id:'影相',name:'影相師',ico:'📷',duty:'每站拍照、遊客中心四景拍攝'},
+  {id:'譯碼',name:'譯碼官',ico:'🔍',duty:'推理密文、選擇下一站、對聯修辭'},
+  {id:'勘查',name:'勘查司',ico:'🧭',duty:'現場觀察、數數測量、回報大掌櫃'},
+  {id:'引路',name:'引路官',ico:'🗺',duty:'路線規劃、地圖搜尋、計時、清點人數、平安茶摹寫'},
+];
+
+// ══ CLUES ══
+const CLUES={
+  beimen:{
+    temple:{text:"塔城街的石板路上留著字跡：\n\n「往南，找那建於咸豐年間的神廟。\n它的主神執掌陰陽善惡，\n是所有渡海來此的移民，\n踏上這片土地後\n第一個叩拜的對象。\n香煙三百年未斷，\n左獅右獅守門，\n腳下各有乾坤。」",hint:"主神城隍爺負責陰間善惡審判。1859年建造，大稻埕只有一座城隍廟。"},
+    ciSheng:{text:"塔城街的石板路上留著字跡：\n\n「往東北方走，\n找那榕樹如傘蓋般遮住廣場的地方。\n那裡曾是碼頭的延伸，\n一位守護渡海者的女神在那裡等著你們。\n廣場上的老人，\n是她最忠實的見證者。」",hint:"主祀媽祖，廟前有老榕樹和傳統小吃，廟旁曾是淡水河碼頭。"},
+    tenRow:{text:"塔城街的石板路上留著字跡：\n\n「沿著老街走，\n找那不是一棟、而是一排的建築。\n十個門牌緊緊相依，\n共用一條走廊，\n每家門寬都一樣，\n每家故事卻各不相同。」",hint:"日治時期連排街屋，十個門牌共用騎樓，立面寬度完全一致。"},
+  },
+  temple:{
+    ciSheng:{text:"城隍廟籤詩上寫著：\n\n「向西走，找榕樹下的廣場。\n那裡曾是碼頭的延伸，\n一位守護渡海者的女神\n在那裡等著你們。」",hint:"慈聖宮，主祀媽祖，廟前有大榕樹和傳統小吃。"},
+    tenRow:{text:"城隍廟籤詩上寫著：\n\n「繼續沿老街北行，\n找那連成一排的紅磚街屋。\n十戶人家，共用騎樓，\n門寬相等，故事各異。」",hint:"十連棟，日治時期連排街屋。"},
+    visitor:{text:"城隍爺最後的指引：\n\n「去找那棟保存日治時期建築風格的老屋，\n如今成為旅人服務的據點。\n它就在永樂市場旁。\n在那裡，你們將換上\n屬於這個年代的衣裳。」",hint:"大稻埕遊客中心，在霞海城隍廟旁、永樂市場附近。"},
+  },
+  ciSheng:{
+    temple:{text:"廟旁阿嬤遞來紙條：\n\n「往南走，找那座\n有一百六十多年歷史的古廟。\n它的主神不是守護漁民的，\n而是守護善惡公正的。\n香爐前，移民的願望燃燒了三百年。」",hint:"霞海城隍廟，主神城隍爺負責陰間善惡審判。"},
+    tenRow:{text:"廟旁阿嬤遞來紙條：\n\n「沿著老街走，\n找那不是一棟、是一排的建築。\n紅磚拱廊，紅燈籠，\n每個門洞的寬度都一樣，\n這是日治時代都市規劃的遺留。」",hint:"十連棟，日治時期連排街屋，共8個門洞。"},
+    visitor:{text:"榕樹下的老人說：\n\n「你們快去找那棟老建築，\n它保存著日治時代的樣貌，\n現在是旅人補給的地方。\n就在這附近，走路幾分鐘就到了。\n在那裡，你們要換上一百年前的衣裳。」",hint:"大稻埕遊客中心，是今天的換裝地點。"},
+  },
+  tenRow:{
+    ciSheng:{text:"十連棟的磚縫裡藏著字：\n\n「往南走，\n找榕樹廣場，\n找那位海上女神的廟。\n廣場下的小吃攤，\n是百年前移民生活的延續。」",hint:"慈聖宮，主祀媽祖，廟前有大榕樹和傳統小吃攤。"},
+    temple:{text:"十連棟的磚縫裡藏著字：\n\n「去找那座\n有著三百年香火的古廟。\n它的主神執掌善惡，\n是所有移民的精神依靠。\n城隍爺的眼睛，\n看穿了所有謊言。」",hint:"霞海城隍廟，主神城隍爺，負責陰間的善惡審判。"},
+    visitor:{text:"十連棟廊道盡頭有人說：\n\n「前往那棟保存日治建築風格的老屋，\n它在永樂市場旁，\n是今天的換裝地點。\n穿上旗袍，\n你們就真正進入1924年了。」",hint:"大稻埕遊客中心，在永樂市場旁。"},
+  },
+};
+
+// ══ STATION OPTIONS (for select screen) ══
+const STAT_OPT={
+  temple:{desc:"建於咸豐年間，香煙三百年未斷。主神執掌善惡陰陽，是移民最重要的精神依靠。",sub:"國文科任務在此",hint:"這是霞海城隍廟，1859年建造，主神城隍爺。"},
+  ciSheng:{desc:"老榕樹如傘蓋撐起廣場，主祀海上女神。旁有傳統小吃攤，曾是大稻埕的港口延伸。",sub:"自然科任務在此",hint:"這是慈聖宮廣場，主祀媽祖，廟前有大榕樹。"},
+  tenRow:{desc:"紅磚拱廊，紅燈籠連綿。十個門牌緊緊相依，每家門寬都一樣。",sub:"數學科任務在此",hint:"這是十連棟，日治時期連排街屋。"},
+  visitor:{desc:"保存日治時期建築風格的老屋，現為旅人服務據點，就在永樂市場旁。",sub:"換裝地點在此",hint:"這是大稻埕遊客中心，換裝旗袍的地點。"},
+  fake1:{desc:"迪化街上外牆刻有英文字母與雙龍浮雕的老建築，曾是日治時期最大的西藥房。",sub:"迪化街地標",hint:"這是屈臣氏大藥局，是迪化街建築地標，但不是你們下一站。"},
+  fake2:{desc:"永樂市場旁的傳統布料批發市場，南北貨聚集，是大稻埕最熱鬧的商業核心。",sub:"大稻埕商業中心",hint:"這是永樂市場，雖然就在附近，但不是你們下一站。"},
+  fake3:{desc:"淡水河畔的水門入口，旁邊有一片寬闊廣場。百年前茶葉就從這裡裝船出口世界各地。",sub:"百年貿易港口",hint:"這是大稻埕碼頭，是出發點，不是接下來的任務地點。"},
+};
+
+// ══ STATIONS ══
+const STATIONS={
+  beimen:{
+    name:"北門・塔城街",sub:"固定第一站・時空傳送認證",subj:"social",subjName:"社會科",
+    story:"資深顧問：「各商行大掌櫃，你們已穿越時空抵達1924年的台北北門。出站後過鄭州路，地面的圓形方位標就是你們進入大稻埕的起點。引路官，帶領全組完成時空認證，計時正式開始。」",
+    read:{src:"連橫《台灣通史》〈商務志〉　大正九年（1920）",exc:"大稻埕之茶，甲於全台，\n歲出數百萬斤，遠銷歐美。\n茶商之富，甲第連雲，\n車馬輻輳，繁盛一時。",note:"連橫是台灣第一部通史的作者。他記錄了大稻埕最風光的年代——茶葉讓這裡的商人成為全台最富有的人。這條塔城街，就是當年茶商進出大稻埕的要道。",q:"💬 站在1924年台北的街道上，那些奔走於南北的商人，帶著什麼樣的心情踏上這條路？"},
+    tasks:[
+      {id:"d1",type:"messenger",ico:"🗺",lbl:"引路官任務｜時空傳送認證",role:"引路",
+       ins:"出北門站3號出口，過鄭州路，找到地面的圓形方位標。\n拍攝全組認證照：\n①照片中必須出現每一位組員\n②每人右腳踩在圓圈上\n③每人伸出左手指向「迪化大稻埕」方向\n\n傳送至老師Messenger後，計時正式開始！",pts:15},
+      {id:"d2",type:"text",ico:"📊",lbl:"全組任務｜社會科・稅率計算",
+       ins:"1924年，台灣茶葉出口至英國需繳5%關稅，出口至美國需繳8%。\n若一批茶葉總價3,000元，分別出口至英國2,000元、美國1,000元，總稅額為何？\n寫出計算過程。",ph:"英國稅：\n美國稅：\n總稅額：",pts:10},
+      {id:"d4",type:"clue",ico:"🔑",lbl:"大掌櫃任務｜出發信念",role:"掌櫃",
+       ins:"由大掌櫃寫下你們商行的出發信念——一句話，說明這次偵查對你們的意義。",ph:"我們商行的出發信念：",pts:10},
+    ],
+    know:{t:"北門與大稻埕的關係",c:"北門（承恩門）建於1884年，是清代台北府城的正北門，也是進出大稻埕商業區最重要的出入口。1924年，茶商、布商、南北貨商人每天都從這裡進進出出，這條路是當時台北最繁忙的商業動脈之一。"},
+    food:"📍 北門附近：地下街出口有便利商店，可快速補給水和點心。正餐建議等到城隍廟或慈聖宮附近再用餐。",
+  },
+  temple:{
+    name:"霞海城隍廟",sub:"民間信仰・移民的守護",subj:"chinese",subjName:"國文科",
+    story:"「城隍爺見證了大稻埕三百年的移民史。譯碼官，仔細分析廟內的對聯；引路官，去喝一杯平安茶，用文字記錄那個味道；影相師，把廟內最有歷史感的角落留下來。」",
+    read:{src:"〈渡台悲歌〉　清代台灣民間歌謠（作者佚名）",exc:"勸君切莫過台灣，台灣恰似鬼門關。\n千個人去無百返，知生知死都是難。\n\n父母妻兒來相送，相送郊外哭成團。\n一去不知回頭日，只求媽祖保平安。",note:"這首歌謠描述移民渡台前與家人生離死別的場景。橫渡台灣海峽風險極高，許多人一去不返——這解釋了為什麼移民到了台灣，第一件事就是建廟。",q:"💬 試著用現代白話文改寫第一段，保留原本的情感核心。"},
+    tasks:[
+      {id:"t1",type:"text",ico:"📖",lbl:"譯碼官任務｜國文科・對聯修辭分析",role:"譯碼",
+       ins:"找到廟內一副對聯，抄寫全文，並分析：\n①使用了哪種修辭？\n②這副對聯想表達什麼？",ph:"對聯全文：\n\n修辭：\n意思：",pts:10},
+      {id:"t2",type:"text",ico:"☕",lbl:"引路官任務｜國文科・平安茶摹寫",role:"引路",
+       ins:"城隍廟提供免費熱的平安茶，全組每人喝一杯。由引路官負責用文字描述口感——甜度、溫度、入喉後的感覺——寫成一段至少包含三個摹寫詞的句子。",ph:"平安茶的味道：",pts:10},
+      {id:"t3",type:"photo",ico:"📷",lbl:"影相師任務｜廟宇影像",role:"影相",
+       ins:"找一塊廟內你覺得最有意思的匾額或對聯，拍下來上傳。",pts:10},
+      {id:"t4",type:"text",ico:"🔍",lbl:"勘查司任務｜觀察右邊石獅",role:"勘查",
+       ins:"廟門前有一對石獅（站在廟外面向廟門，右手邊是右獅）。仔細觀察右邊的石獅腳下，圍繞著什麼？詳細描述。",ph:"右獅腳下：",pts:10},
+      {id:"t5",type:"text",ico:"📚",lbl:"全組任務｜移民信仰歷史題",
+       ins:"思考並討論：\n①為什麼先民渡海來台後，第一件事就是建廟？\n②城隍爺和媽祖分別守護移民的哪個面向？",ph:"我們的回答：",pts:10},
+      {id:"t6",type:"clue",ico:"🔑",lbl:"勘查司任務｜線索收集",role:"勘查",
+       ins:"找到「霞海城隍廟」廟額，數上面共有幾個中文字，記下來——這是密語的一部分。",ph:"廟額字數：",pts:20},
+    ],
+    know:{t:"霞海城隍廟與移民信仰",c:"霞海城隍廟建於1859年，是大稻埕發展的精神核心。城隍爺負責陰間的行政與審判，深受移民社會信賴——這些渡海來台、生死未卜的先民，需要一個能「懲惡揚善」的神靈見證他們的誠信。"},
+    food:"📍 城隍廟附近：永樂市場步行不到50公尺，附近有小吃店，是補充體力的好時機！",
+  },
+  ciSheng:{
+    name:"慈聖宮廣場",sub:"港口貿易・生命科學",subj:"science",subjName:"自然科",
+    story:"「榕樹下藏著自然科學的秘密——老樹的生理，和茶葉的化學，在這裡相遇。勘查司，仔細觀察老樹；引路官，計時；影相師，拍下最有生命力的一刻。」",
+    read:{src:"連橫《台灣通史》〈開闢紀〉　大正九年（1920）",exc:"台灣固海上荒島也，篳路藍縷，以啟山林。\n先民渡海而來，胼手胝足，\n以拓荒土，流血流汗，\n以奠今日之基。\n\n念先人之艱苦，知今日之不易。",note:"「胼手胝足」形容手腳因勞動長出厚繭。現在你站的地方，當年就是那些手上長著繭的移民上岸後第一個喘息的地點。",q:"💬 你們這次旅行的辛苦之處，和先民渡海的辛苦，有什麼可以類比的地方？"},
+    tasks:[
+      {id:"c1",type:"text",ico:"🌳",lbl:"勘查司任務｜自然科・老榕樹觀察",role:"勘查",
+       ins:"找到廣場最大的老榕樹，觀察並記錄：\n①樹幹直徑估計（用手臂長度測量）？\n②有幾條主要氣根垂落？\n③樹下的微生態（有什麼生物？）",ph:"直徑估計：\n氣根數量：\n微生態：",pts:10},
+      {id:"c2",type:"text",ico:"🍵",lbl:"全組任務｜自然科・茶葉氧化原理",
+       ins:"大稻埕以茶葉貿易著名。討論：\n①綠茶和紅茶有什麼差別？\n②哪種茶的氧化程度最高？",ph:"綠茶vs紅茶：\n氧化最高：",pts:10},
+      {id:"c3",type:"photo",ico:"📷",lbl:"影相師任務｜日常生活紀錄",role:"影相",
+       ins:"拍一張「最能代表這個廣場的日常生活」的照片——不是建築，而是人和場景。",pts:10},
+      {id:"c4",type:"text",ico:"🗣",lbl:"引路官任務｜訪問記錄",role:"引路",
+       ins:"找廣場旁小吃攤的老闆訪問：「您知道以前這附近是碼頭嗎？」記錄他的反應和內容。",ph:"訪問對象：\n他說：",pts:10},
+      {id:"c6",type:"clue",ico:"🔑",lbl:"全組任務｜媽祖信仰思考題",
+       ins:"思考並討論：\n①大稻埕的地理位置和媽祖信仰有什麼關係？\n②渡海移民為什麼特別需要媽祖的庇護？\n③今天的大稻埕還有多少人來拜媽祖？信仰隨著時代改變了嗎？\n\n大掌櫃整合全組討論，寫下結論（至少3點）。",ph:"我們的結論：\n1.\n2.\n3.",pts:20},
+    ],
+    know:{t:"慈聖宮、茶葉科學與港口移民",c:"慈聖宮主祀媽祖，是典型的移民港口信仰。清代大稻埕的淡水河岸就在附近，貨船往來頻繁。茶葉的氧化原理：綠茶不氧化，紅茶完全氧化，烏龍茶半氧化。"},
+    food:"📍 慈聖宮廣場：榕樹下是全程最多傳統小吃攤的地方——麵線、豬血湯、滷肉飯應有盡有！",
+  },
+  tenRow:{
+    name:"十連棟",sub:"城市紋理・數學幾何",subj:"math",subjName:"數學科",
+    story:"「最後一個中間站。勘查司，計算石柱幾何；影相師，複製老師拍的廊道透視照——構圖必須和參考照一模一樣，但要有你們自己人。大掌櫃，做最後的統籌。」",
+    read:{src:"黃春明〈兒子的大玩偶〉後記　民國六十三年（1974）",exc:"一條街的消失，不只是幾棟房子不見了。\n是某一個人記憶裡的早晨，\n是另一個人習慣推開的那扇門，\n\n是大家以為理所當然，\n等到不見了才知道——\n原來那就是家的樣子。",note:"黃春明是台灣鄉土文學重要作家。這段話，放在十連棟前讀，有一種難以言說的重量。",q:"💬 一條街的消失，你覺得最先消失的是什麼？建築，還是記憶？"},
+    tasks:[
+      {id:"r1",type:"text",ico:"📐",lbl:"勘查司任務｜數學科・石柱幾何計算",role:"勘查",
+       ins:"觀察十連棟的紅磚方形石柱：\n①石柱截面為正方形，邊長50公分\n②石柱高度4公尺\n③求一根柱子的體積（公分³）\n④求四面磚牆的總面積（公分²）\n寫出完整計算過程。",ph:"體積：50×50×400＝\n\n面積：(50×400)×4＝",pts:10},
+      {id:"r2",type:"messenger",ico:"📷",lbl:"影相師挑戰任務｜廊道透視複製",role:"影相",
+       ins:"複製老師拍的廊道構圖——紅磚拱廊＋紅燈籠連綿延伸的透視感。\n照片中必須有組員入鏡。\n拍完傳送至老師Messenger。",pts:10},
+      {id:"r3",type:"text",ico:"✏️",lbl:"全組任務｜觀察新舊並存",
+       ins:"觀察十連棟：\n①這排建築有什麼統一的特徵？\n②有沒有「新與舊並存」的痕跡？",ph:"統一特徵：\n新舊並存：",pts:10},
+      {id:"r4",type:"clue",ico:"🔑",lbl:"勘查司任務｜線索收集",role:"勘查",
+       ins:"數清楚十連棟共有幾個門洞（入口開口），記下來——這是密語的一部分。",ph:"門洞數量：＿個",pts:20},
+    ],
+    know:{t:"十連棟：城市紋理的最後守護者",c:"「十連棟」是大稻埕保存下來的日治時期連排街屋，記錄了當時「土地分配均等、街道立面一致」的都市規劃邏輯。"},
+    food:"📍 十連棟附近：幾乎沒有小吃選擇，請提前在慈聖宮或城隍廟附近用餐。",
+  },
+};
+
+// ══ VISITOR TASKS ══
+const VISITOR_TASKS_PRE=[
+  {id:"v1",type:"messenger",ico:"📷",lbl:"影相師任務｜現代服全組合照",
+   ins:"在3樓永樂燈苑的燈籠下，拍現代服全組合照。\n由影相師設計一個統一動作——記住這個動作，旗袍版要完全一樣！\n拍完傳送至老師Messenger。",pts:10},
+  {id:"v2",type:"messenger",ico:"📷",lbl:"影相師任務｜現代服個人照",
+   ins:"同一位置同一動作，每位組員輪流拍一張個人照。\n拍完傳送至老師Messenger後，才可以去換旗袍。",pts:10},
+];
+const VISITOR_TASKS_POST=[
+  {id:"v3",type:"messenger",ico:"📷",lbl:"影相師任務｜旗袍全組合照",
+   ins:"換上旗袍後，回到同一地點，同一動作，拍旗袍版全組合照。\n和現代服版構圖要一模一樣！",pts:15},
+  {id:"v4",type:"messenger",ico:"📷",lbl:"影相師任務｜旗袍個人照",
+   ins:"旗袍版每人一張個人照，同一地點同一動作。",pts:10},
+];
+const VISITOR_TASKS=[...VISITOR_TASKS_PRE,...VISITOR_TASKS_POST];
+
+// ══ FINAL TASKS ══
+const FINAL_MAIN=[
+  {id:"f1",type:"messenger",ico:"🏛",lbl:"影相師任務｜時空入侵者・MAC＋Adidas對比照",role:"影相",
+   ins:"在迪化街找到兩間外商品牌店：\n・MAC彩妝\n・大稻埕愛迪達\n\n拍一張包含兩間店的對比照，傳送至老師Messenger。",pts:15},
+  {id:"f2",type:"messenger",ico:"🏮",lbl:"影相師任務｜山牆獵人・找特殊屋頂裝飾",role:"影相",
+   ins:"迪化街的建築頂端藏著各種山牆裝飾——找到一棟你覺得最特別的，拍下來傳送至老師Messenger。\n\n💡 抬頭看！答案在屋頂上。",pts:15},
+];
+
+// ══ STATE ══
+let S={
+  gid:'g'+Date.now(),group:'',route:'',roleAssign:{},
+  order:[],idx:0,done:[],
+  answers:{},photos:{},
+  visitorAnswers:{},visitorPhotos:{},
+  finalAnswers:{},finalPhotos:{},
+  score:0,wrongs:0,
+  checkinTime:null,checkinRank:0,
+  startTime:null,endTime:null,
+  puzzleSolved:false,qipaoUnlocked:false,
+  locked:false,
+};
+
+function saveLocal(){
+  try{localStorage.setItem('_gameState',JSON.stringify({...S,photos:{},visitorPhotos:{},finalPhotos:{}}));}
+  catch(e){}
+}
+function loadLocal(){
+  try{
+    const d=localStorage.getItem('_gameState');
+    if(!d)return false;
+    const o=JSON.parse(d);
+    if(!o.gid)return false;
+    S={...S,...o};
+    return true;
+  }catch{return false;}
+}
+function restoreInputs(){
+  const all={...S.answers,...S.visitorAnswers,...S.finalAnswers};
+  Object.entries(all).forEach(([id,val])=>{
+    if(val==='sent')return;
+    const ta=document.querySelector('#b_'+id+' textarea');
+    if(ta&&val)ta.value=val;
+  });
+}
+
+// ══ SETUP ══
+let groupCount=5;
+function setCount(n){
+  groupCount=n;
+  const b5=document.getElementById('btn5');
+  const b6=document.getElementById('btn6');
+  if(b5){b5.style.border='2px solid '+(n===5?'var(--gold)':'var(--brown2)');b5.style.background=n===5?'#FFF9E8':'var(--paper)';b5.style.fontWeight=n===5?'700':'400';}
+  if(b6){b6.style.border='2px solid '+(n===6?'var(--gold)':'var(--brown2)');b6.style.background=n===6?'#FFF9E8':'var(--paper)';b6.style.fontWeight=n===6?'700':'400';}
+  const extra=document.getElementById('mr_影相2');
+  if(extra)extra.style.display=n===6?'flex':'none';
+}
+
+function showSetup(){
+  showScreen('setup');
+  const rg=document.getElementById('routeGrid');
+  rg.innerHTML=Object.keys(ROUTES).map(k=>`
+    <div class="route-card" id="rc_${k}" onclick="selectRoute('${k}')">
+      <div class="route-name">${k}</div>
+      <div style="font-size:11px;color:var(--brown2);font-family:'Noto Sans TC',sans-serif">神秘路線，待解謎</div>
+    </div>`).join('');
+  document.getElementById('roleGrid').innerHTML=ROLES.map(r=>`
+    <div class="role-card" id="roleC_${r.id}" onclick="selectRole('${r.id}')">
+      <div class="role-chk">✓</div>
+      <div class="role-ico">${r.ico}</div>
+      <div class="role-name">${r.name}</div>
+      <div class="role-duty">${r.duty}</div>
+    </div>`).join('');
+  document.getElementById('memberFields').innerHTML=ROLES.map(r=>`
+    <div class="member-row" id="mr_${r.id}" style="display:none">
+      <div class="mn">${r.ico}</div>
+      <input class="inp" id="mi_${r.id}" placeholder="${r.name}的座號" type="number" min="1" max="99">
+    </div>`).join('')+`
+    <div class="member-row" id="mr_影相2" style="display:none">
+      <div class="mn">📷</div>
+      <input class="inp" id="mi_影相2" placeholder="影相師副手的座號" type="number" min="1" max="99">
+    </div>`;
+}
+
+function selectRoute(k){
+  S.route=k;
+  document.querySelectorAll('.route-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('rc_'+k)?.classList.add('sel');
+}
+function selectRole(id){
+  const c=document.getElementById('roleC_'+id);
+  const r=document.getElementById('mr_'+id);
+  if(!c)return;
+  if(c.classList.contains('sel')){c.classList.remove('sel');if(r)r.style.display='none';}
+  else{c.classList.add('sel');if(r){r.style.display='flex';setTimeout(()=>document.getElementById('mi_'+id)?.focus(),100);}}
+}
+function startMission(){
+  if(!S.route){toast('請選擇路線');return;}
+  const gn=_v('groupName');if(!gn){toast('請填寫商行名稱');return;}
+  S.group=gn;
+  S.roleAssign={};let hasAny=false;
+  ROLES.forEach(r=>{const n=_v('mi_'+r.id);if(n){S.roleAssign[r.id]=n;hasAny=true;}});
+  const extra=_v('mi_影相2');if(extra)S.roleAssign['影相2']=extra;
+  if(!hasAny){toast('請至少填入一位成員座號');return;}
+  S.order=ROUTES[S.route].stations;S.idx=0;
+  S.startTime=Date.now();
+  saveLocal();
+  showStation(S.order[0]);
+}
+
+// ══ TASK HTML ══
+function taskHTML(t,ansKey,photoKey){
+  const d=isDone(t.id,ansKey,photoKey);
+  const isClue=t.type==='clue';
+  const roleObj=t.role?ROLES.find(r=>t.role.split(',').includes(r.id)):null;
+  let roleNote=roleObj?`<div class="rnote2">${roleObj.ico} 負責：${roleObj.name}${S.roleAssign[roleObj.id]?'（'+S.roleAssign[roleObj.id]+'）':''}</div>`:'';
+  let ptsNote=t.pts?`<div class="pts-badge">✦ 完成得 +${t.pts}分</div>`:'';
+  let body='';
+  if(t.type==='messenger'){
+    const sent=S[ansKey]?.[t.id]==='sent';
+    body=`${roleNote}${ptsNote}
+    <div class="tins">${t.ins}</div>
+    <div class="msg-box">
+      <div class="msg-label">📲 拍完後，直接傳送至老師的 Facebook Messenger</div>
+      <div class="msg-warn">⚠️ 請勿上傳到網頁，保護個人隱私</div>
+    </div>
+    <button id="mb_${t.id}" onclick="confirmMessenger('${t.id}','${ansKey}','${photoKey}')" class="btn-messenger" style="background:${sent?'#4CAF50':'#1877F2'}">${sent?'✓ 已傳送確認':'📩 已傳送至老師Messenger，點此確認'}</button>`;
+  } else if(t.type==='photo'){
+    const src=S[photoKey]?.[t.id];
+    body=`${roleNote}${ptsNote}
+    <div class="tins">${t.ins}</div>
+    <div class="pa" id="pa_${t.id}" onclick="document.getElementById('pi_${t.id}').click()" style="border:2px dashed var(--brown2);background:var(--paper);padding:20px;text-align:center;cursor:pointer">
+      ${src?`<img src="${src}" style="width:100%;max-height:200px;object-fit:cover">`:`<div style="font-size:28px;margin-bottom:5px">📷</div><div style="font-size:12px;color:var(--brown2)">點擊拍照或選取照片</div>`}
+    </div>
+    <input type="file" accept="image/*" class="pi" id="pi_${t.id}" style="display:none" onchange="handlePhoto(event,'${t.id}','${ansKey}','${photoKey}')">`;
+  } else {
+    body=`${roleNote}${ptsNote}
+    <div class="tins">${t.ins}</div>
+    <textarea class="inp" placeholder="${t.ph||''}" rows="3" oninput="S['${ansKey}']=(S['${ansKey}']||{});S['${ansKey}']['${t.id}']=this.value"></textarea>
+    <button class="bsave" onclick="saveTask('${t.id}','${ansKey}','${photoKey}')">✓ 儲存</button>`;
+  }
+  return `<div class="task ${d?'done':''} ${isClue?'clue':''}" id="c_${t.id}">
+    <div class="task-hdr" onclick="toggleTask('${t.id}')">
+      <div class="tico">${d?'✓':t.ico}</div>
+      <div class="tlbl">${t.lbl}</div>
+      <div class="tsta">${d?'已完成 ✓':'待完成'}</div>
+    </div>
+    <div class="tbody" id="b_${t.id}">${body}</div>
+  </div>`;
+}
+
+function isDone(id,ansKey,photoKey){
+  if(ansKey&&S[ansKey]?.[id])return true;
+  if(photoKey&&S[photoKey]?.[id])return true;
+  return !!(S.answers[id]||S.photos[id]||S.visitorAnswers[id]||S.visitorPhotos[id]||S.finalAnswers[id]||S.finalPhotos[id]);
+}
+
+function toggleTask(id){
+  const b=document.getElementById('b_'+id);
+  if(!b)return;
+  const open=b.classList.contains('open');
+  document.querySelectorAll('.tbody').forEach(x=>x.classList.remove('open'));
+  if(!open)b.classList.add('open');
+}
+
+function saveTask(id,ansKey,photoKey){
+  const ta=document.querySelector('#b_'+id+' textarea');
+  if(!ta||!ta.value.trim()){toast('請先填寫內容');return;}
+  if(!S[ansKey])S[ansKey]={};
+  S[ansKey][id]=ta.value.trim();
+  const allT=[...Object.values(STATIONS).flatMap(s=>s.tasks||[]),...VISITOR_TASKS,...FINAL_MAIN];
+  const t=allT.find(x=>x.id===id);
+  if(t&&t.pts){S.score+=t.pts;updateScoreDisplay();}
+  markDone(id);
+  saveLocal();autoSave();
+  toast('✓ 已儲存！');
+  const sid=S.order[S.idx];
+  const station=STATIONS[sid];
+  if(station){updateKnow(station,sid);updateBtn(station,sid);}
+}
+
+function handlePhoto(e,id,ansKey,photoKey){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    if(!S[photoKey])S[photoKey]={};
+    S[photoKey][id]=ev.target.result;
+    const pa=document.getElementById('pa_'+id);
+    if(pa)pa.innerHTML=`<img src="${ev.target.result}" style="width:100%;max-height:200px;object-fit:cover">`;
+    const allT=[...Object.values(STATIONS).flatMap(s=>s.tasks||[]),...VISITOR_TASKS,...FINAL_MAIN];
+    const t=allT.find(x=>x.id===id);
+    if(t&&t.pts){S.score+=t.pts;updateScoreDisplay();}
+    markDone(id);
+    saveLocal();autoSave();
+    toast('📸 照片已儲存！');
+    const sid=S.order[S.idx];
+    const station=STATIONS[sid];
+    if(station){updateKnow(station,sid);updateBtn(station,sid);}
+  };
+  r.readAsDataURL(f);
+}
+
+function markDone(id){
+  const c=document.getElementById('c_'+id);if(!c)return;
+  c.classList.add('done');
+  const ico=c.querySelector('.tico');if(ico)ico.textContent='✓';
+  const sta=c.querySelector('.tsta');if(sta)sta.textContent='已完成 ✓';
+  const b=document.getElementById('b_'+id);if(b)b.classList.remove('open');
+}
+
+function confirmMessenger(id,ansKey,photoKey){
+  if(!S[ansKey])S[ansKey]={};
+  S[ansKey][id]='sent';
+  const allT=[...Object.values(STATIONS).flatMap(s=>s.tasks||[]),...VISITOR_TASKS,...FINAL_MAIN];
+  const t=allT.find(x=>x.id===id);
+  if(t&&t.pts){S.score+=t.pts;updateScoreDisplay();}
+  markDone(id);
+  const btn=document.getElementById('mb_'+id);
+  if(btn){btn.style.background='#4CAF50';btn.textContent='✓ 已傳送確認';}
+  saveLocal();autoSave();
+  toast('✓ 已確認傳送！');
+  setTimeout(checkUnlockBtn,100);
+  const sid=S.order[S.idx];
+  const station=STATIONS[sid];
+  if(station){updateKnow(station,sid);updateBtn(station,sid);}
+}
+
+// ══ STATION ══
+function showStation(sid){
+  if(sid==='visitor'){showVisitor();return;}
+  if(sid==='dihua'){showFinalStation();return;}
+  const s=STATIONS[sid];
+  if(!s){toast('站點資料錯誤');return;}
+  showScreen('station');
+
+  document.getElementById('staProg').innerHTML=S.order.map((id,i)=>{
+    const d=S.done.includes(id);const a=i===S.order.indexOf(sid);
+    return `<div class="pdot ${d?'done':a?'active':''}"></div>`;
+  }).join('');
+  const idx=S.order.indexOf(sid)+1;
+  document.getElementById('staNum').textContent=`第 ${idx} 站 · 共 6 站`;
+  document.getElementById('staName').textContent=s.name;
+  document.getElementById('staSub').textContent=s.sub;
+  const tagMap={social:'tag-soc',chinese:'tag-ch',science:'tag-sci',math:'tag-math'};
+  document.getElementById('subjTag').innerHTML=`<span class="subj-tag ${tagMap[s.subj]||''}">${s.subjName}</span>`;
+
+  const activeRoles=new Set(s.tasks.filter(t=>t.role).flatMap(t=>t.role.split(',')));
+  document.getElementById('roleBadges').innerHTML=ROLES.map(r=>{
+    const act=activeRoles.has(r.id);
+    const member=S.roleAssign[r.id]||'';
+    return `<div class="rbadge ${act?'hi':''}">${r.ico} ${r.name}${member?'（'+member+'）':''}</div>`;
+  }).join('');
+
+  document.getElementById('storyTxt').textContent=s.story;
+  document.getElementById('rsrc').textContent=s.read.src;
+  document.getElementById('rexc').textContent=s.read.exc;
+  document.getElementById('rnote').textContent=s.read.note;
+  document.getElementById('rq').textContent=s.read.q;
+  document.getElementById('rb').classList.remove('open');
+  document.getElementById('rh').textContent='展開 ▾';
+  document.getElementById('fb').textContent=s.food||'';
+  document.getElementById('fb').classList.remove('open');
+  document.getElementById('fh').textContent='展開 ▾';
+  document.getElementById('foodCard').style.display=s.food?'block':'none';
+
+  // Render tasks
+  document.getElementById('tasksC').innerHTML=s.tasks.map(t=>taskHTML(t,'answers','photos')).join('');
+  setTimeout(()=>{
+    s.tasks.forEach(t=>{
+      const ta=document.querySelector('#b_'+t.id+' textarea');
+      if(ta&&S.answers[t.id])ta.value=S.answers[t.id];
+    });
+  },50);
+
+  updateKnow(s,sid);
+  updateBtn(s,sid);
+  document.getElementById('navProg').textContent=`${S.done.length}/6`;
+}
+
+function toggleRead(){const b=document.getElementById('rb');const h=document.getElementById('rh');b.classList.toggle('open');h.textContent=b.classList.contains('open')?'收起 ▴':'展開 ▾';}
+function toggleFood(){const b=document.getElementById('fb');const h=document.getElementById('fh');b.classList.toggle('open');h.textContent=b.classList.contains('open')?'收起 ▴':'展開 ▾';}
+
+function updateKnow(s,sid){
+  const allDone=s.tasks.every(t=>isDone(t.id,'answers','photos'));
+  if(allDone){
+    document.getElementById('kl').classList.add('hide');
+    document.getElementById('ku').classList.add('show');
+    document.getElementById('kwt').textContent=s.know.t;
+    document.getElementById('kwc').textContent=s.know.c;
+  }
+}
+
+function updateBtn(s,sid){
+  const btn=document.getElementById('btnDone');
+  const txt=document.getElementById('btnTxt');
+  if(!btn||!txt)return;
+  const allDone=s.tasks.every(t=>isDone(t.id,'answers','photos'));
+  if(allDone){
+    btn.disabled=false;
+    txt.textContent='解開遺書密文，前往下一站 →';
+  } else {
+    btn.disabled=true;
+    const rem=s.tasks.filter(t=>!isDone(t.id,'answers','photos')).length;
+    txt.textContent=`尚有 ${rem} 項任務未完成`;
+  }
+}
+
+function tryCompleteStation(){
+  const sid=S.order[S.idx];
+  const s=STATIONS[sid];
+  if(s){
+    const notDone=s.tasks.filter(t=>!isDone(t.id,'answers','photos'));
+    if(notDone.length>0){
+      toast('請先完成所有任務！');
+      updateBtn(s,sid);
+      return;
+    }
+  }
+  completeStation();
+}
+
+function completeStation(){
+  const sid=S.order[S.idx];
+  if(!S.done.includes(sid))S.done.push(sid);
+  saveLocal();autoSave();
+  const nextIdx=S.idx+1;
+  if(nextIdx>=S.order.length){showFinalStation();return;}
+  const nextSid=S.order[nextIdx];
+  if(nextSid==='visitor'){S.idx=nextIdx;showVisitor();return;}
+  if(nextSid==='dihua'){S.idx=nextIdx;showFinalStation();return;}
+  // 顯示密文讓學生推理
+  showClueReveal(sid);
+}
+
+function goBack(){
+  if(S.idx>0){
+    S.idx--;
+    const sid=S.order[S.idx];
+    if(sid==='visitor')showVisitor();
+    else if(sid==='dihua')showFinalStation();
+    else showStation(sid);
+  } else {
+    toast('已是第一站');
+  }
+}
+
+// ══ CLUE + SELECT ══
+function showClueReveal(sid){
+  S.wrongs=0;
+  const nextSid=S.order[S.idx+1];
+  const clueObj=CLUES[sid]?.[nextSid]||{text:"密文無法辨識，請向顧問請求提示。",hint:"請直接前往下一個地點。"};
+  document.getElementById('crBadge').textContent=`第 ${S.idx+1} 站完成`;
+  document.getElementById('crText').textContent=clueObj.text;
+  document.getElementById('crHintTxt').textContent=clueObj.hint;
+  document.getElementById('crHint').classList.remove('show');
+  showScreen('clue-reveal');
+}
+
+function showStationSelect(){
+  const remaining=['temple','ciSheng','tenRow'].filter(id=>!S.done.includes(id)&&id!==S.order[S.idx]);
+  S.wrongs=0;
+  const correct=S.order[S.idx+1];
+  const fakes=['fake1','fake2','fake3'].sort(()=>Math.random()-.5);
+  let options=[...remaining];
+  for(const f of fakes){if(options.length>=5)break;options.push(f);}
+  const shuffled=options.sort(()=>Math.random()-.5);
+  document.getElementById('gi').textContent='';
+  document.getElementById('selCards').innerHTML=shuffled.map((id,i)=>`
+    <div class="oc" id="oc_${id}" onclick="pickStation('${id}','${correct}')">
+      <div class="oc-num">選項 ${String.fromCharCode(65+i)}</div>
+      <div class="oc-desc">${STAT_OPT[id]?.desc||'—'}</div>
+      <div class="oc-sub">${STAT_OPT[id]?.sub||''}</div>
+      <div class="oc-wh">${STAT_OPT[id]?.hint||''}</div>
+    </div>`).join('');
+  showScreen('station-select');
+}
+
+function pickStation(sel,correct){
+  if(sel===correct){
+    S.idx++;
+    S.score+=15;updateScoreDisplay();
+    toast('✓ 譯碼官推理正確！+15分');
+    setTimeout(()=>showStation(sel),600);
+  } else {
+    S.wrongs++;S.score=Math.max(0,S.score-5);updateScoreDisplay();
+    const c=document.getElementById('oc_'+sel);
+    if(c){c.classList.add('wrong');setTimeout(()=>c.classList.remove('wrong'),700);}
+    if(S.wrongs>=2)document.getElementById('crHint').classList.add('show');
+    const gi=document.getElementById('gi');
+    if(gi)gi.textContent=`已猜錯 ${S.wrongs} 次（-5分）${S.wrongs>=2?' 提示已開放':''}`;
+    const msgs=['時空亂流干擾了譯碼官的判斷！陳員外的鬼魂在嘲笑你們……（-5分）','連鬼魂都替你們感到惋惜了。再猜一次！（-5分）','顧問已累到無力吐槽。請好好看密文。（-5分）'];
+    toast(msgs[Math.min(S.wrongs-1,2)]);
+  }
+}
+
+// ══ VISITOR ══
+function showVisitor(){
+  showScreen('visitor');
+  document.getElementById('visitorProg').innerHTML=S.order.map((id,i)=>{
+    const d=S.done.includes(id);const a=id==='visitor';
+    return `<div class="pdot ${d?'done':a?'active':''}"></div>`;
+  }).join('');
+  // Render pre tasks
+  const pre=document.getElementById('visitorTasksPre');
+  if(pre){pre.innerHTML=VISITOR_TASKS_PRE.map(t=>taskHTML(t,'visitorAnswers','visitorPhotos')).join('');}
+  // Render post tasks
+  const post=document.getElementById('visitorTasksPost');
+  if(post){post.innerHTML=VISITOR_TASKS_POST.map(t=>taskHTML(t,'visitorAnswers','visitorPhotos')).join('');}
+  // Restore state
+  if(S.qipaoUnlocked){
+    document.getElementById('qipaoPhaseCard').style.display='block';
+    document.getElementById('btnUnlockQipao').style.display='none';
+  } else {
+    checkUnlockBtn();
+  }
+  if(S.checkinTime){
+    document.getElementById('btnCheckin').style.display='none';
+    document.getElementById('checkinDone').classList.add('show');
+    document.getElementById('rankDisplay').textContent=`第${S.checkinRank}名報到！`;
+    document.getElementById('checkinTime').textContent=new Date(S.checkinTime).toLocaleTimeString('zh-TW');
+  }
+  // Restore text inputs
+  setTimeout(()=>{
+    VISITOR_TASKS.forEach(t=>{
+      const ta=document.querySelector('#b_'+t.id+' textarea');
+      if(ta&&S.visitorAnswers[t.id])ta.value=S.visitorAnswers[t.id];
+    });
+  },50);
+}
+
+function checkUnlockBtn(){
+  const v1=isDone('v1','visitorAnswers','visitorPhotos');
+  const v2=isDone('v2','visitorAnswers','visitorPhotos');
+  const btn=document.getElementById('btnUnlockQipao');
+  if(btn)btn.style.display=(v1&&v2&&!S.qipaoUnlocked)?'block':'none';
+}
+
+function unlockQipaoPhase(){
+  S.qipaoUnlocked=true;
+  saveLocal();
+  document.getElementById('qipaoPhaseCard').style.display='block';
+  document.getElementById('btnUnlockQipao').style.display='none';
+  toast('✓ 現代服拍攝完成！請去換旗袍，換好後回來完成旗袍版拍攝。');
+}
+
+async function doCheckin(){
+  const now=Date.now();S.checkinTime=now;
+  let rank=1;
+  if(CFG.url){
+    const data=await fbGet(`/sessions/${CFG.sid}/checkins`);
+    if(data)rank=Object.keys(data).length+1;
+    await fbPut(`/sessions/${CFG.sid}/checkins/${S.gid}`,{time:now,group:S.group,rank});
+  }
+  const pts=[20,15,10,5][rank-1]||5;
+  S.checkinRank=rank;S.score+=pts;updateScoreDisplay();
+  document.getElementById('btnCheckin').style.display='none';
+  document.getElementById('checkinDone').classList.add('show');
+  document.getElementById('rankDisplay').textContent=`第${rank}名報到！`;
+  document.getElementById('rankPts').textContent=`報到積分：+${pts}分`;
+  document.getElementById('checkinTime').textContent=new Date(now).toLocaleTimeString('zh-TW');
+  saveLocal();autoSave();
+  toast(`✓ 第${rank}名報到！+${pts}分`);
+}
+
+function checkPuzzle(){
+  const ans=parseInt(document.getElementById('puzzleAns').value);
+  const r=document.getElementById('puzzleResult');
+  if(ans===960){
+    r.textContent='✓ 密碼正確！前兩名組別優先換裝。';r.style.color='var(--green)';
+    S.score+=15;updateScoreDisplay();S.puzzleSolved=true;saveLocal();
+    toast('✓ 密碼正確！+15分');
+  } else {
+    r.textContent=`✗ 密碼錯誤（你的答案：${ans}），再想想看。`;r.style.color='var(--red)';
+  }
+}
+
+function completeVisitor(){
+  if(!S.done.includes('visitor'))S.done.push('visitor');
+  S.idx=S.order.indexOf('visitor')+1;
+  saveLocal();autoSave();
+  showFinalStation();
+}
+
+// ══ FINAL ══
+function showFinalStation(){
+  showScreen('final');
+  document.getElementById('finalProg').innerHTML=S.order.map((id,i)=>{
+    const d=S.done.includes(id);const a=id==='dihua';
+    return `<div class="pdot ${d?'done':a?'active':''}"></div>`;
+  }).join('');
+  document.getElementById('finalMainTasks').innerHTML=FINAL_MAIN.map(t=>taskHTML(t,'finalAnswers','finalPhotos')).join('');
+  document.getElementById('finalScore').textContent=S.score;
+  // Restore
+  setTimeout(()=>{
+    FINAL_MAIN.forEach(t=>{
+      const ta=document.querySelector('#b_'+t.id+' textarea');
+      if(ta&&S.finalAnswers[t.id])ta.value=S.finalAnswers[t.id];
+    });
+  },50);
+  // Cat easter egg
+  setTimeout(()=>showAdvisor('🐱 彩蛋任務！\n\n大稻埕某間老南北貨店，有兩隻鎮店黑貓。\n找到牠們，讓牠賞臉，拍照傳給顧問！\n\n🔍 線索：地上堆著大蒜和辣椒麻袋，天花板掛著零食包的老雜貨店。\n\n⚠️ 貓皇不賞臉請勿強求！'),30000);
+}
+
+function checkFinalCode(){
+  const code=document.getElementById('finalCode').value.trim();
+  const result=document.getElementById('finalCodeResult');
+  if(code==='1924'){
+    result.style.display='block';result.style.color='#2D5A27';
+    result.textContent='✓ 密碼正確！時空通道開啟。歡迎回到2026年——帶著你們在1924年學到的一切。';
+    S.score+=20;updateScoreDisplay();saveLocal();autoSave();
+    toast('🎉 密碼正確！+20分，時空通道開啟！');
+  } else {
+    result.style.display='block';result.style.color='var(--red)';
+    result.textContent='✗ 密碼錯誤。再想想——答案就藏在你們今天走過的每一步。';
+  }
+}
+
+async function submitMission(){
+  if(!S.endTime)S.endTime=Date.now();
+  S.score+=30;updateScoreDisplay();
+  const btn=document.getElementById('btnSubmit');
+  const st=document.getElementById('ss');
+  btn.disabled=true;btn.textContent='提交中…';
+  const payload={
+    groupId:S.gid,groupName:S.group,route:S.route,roleAssign:S.roleAssign,
+    stationOrder:S.order,completedStations:S.done,
+    answers:{...S.answers,...S.visitorAnswers,...S.finalAnswers},
+    score:S.score,checkinRank:S.checkinRank,
+    elapsedMs:S.endTime-S.startTime,
+    submittedAt:new Date().toLocaleString('zh-TW'),
+  };
+  const ok=await fbPut(`/sessions/${CFG.sid}/submissions/${S.gid}`,payload);
+  btn.disabled=false;btn.textContent='停止計時・提交給顧問';
+  if(ok){st.textContent=`✓ 已成功提交！最終積分：${S.score}分`;st.className='ss ok';}
+  else{st.textContent=`⚠ 尚未連接顧問後台。請截圖本頁面交給顧問，告知最終積分：${S.score}分。`;st.className='ss err';}
+  saveLocal();
+}
+
+// ══ FIREBASE ══
+async function fbPut(path,data){if(!CFG.url)return false;try{const r=await fetch(`${CFG.url}${path}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});return r.ok;}catch{return false;}}
+async function fbGet(path){if(!CFG.url)return null;try{const r=await fetch(`${CFG.url}${path}.json`);return r.ok?await r.json():null;}catch{return null;}}
+async function autoSave(){await fbPut(`/sessions/${CFG.sid}/submissions/${S.gid}`,{groupId:S.gid,groupName:S.group,route:S.route,roleAssign:S.roleAssign,stationOrder:S.order,completedStations:S.done,answers:{...S.answers,...S.visitorAnswers,...S.finalAnswers},score:S.score,lastUpdated:new Date().toLocaleString('zh-TW')});}
+
+// Advisor polling
+let lastMsg='';
+function startPoll(){if(!CFG.url)return;setInterval(async()=>{const d=await fbGet(`/sessions/${CFG.sid}/advisorMsg`);if(d&&d.msg&&d.msg!==lastMsg){lastMsg=d.msg;showAdvisor(`【資深顧問訊息】\n\n${d.msg}`);}},15000);}
+
+// ══ TEACHER ══
+function showTeacherEntry(){CFG.url?showScreen('teacher-login'):showScreen('teacher-config');}
+function saveConfig(){
+  const u=_v('cfgUrl'),s=_v('cfgSid'),p=_v('cfgPw');
+  if(!u||!s||!p){toast('請填寫所有欄位');return;}
+  CFG.url=u.replace(/\/$/,'');CFG.sid=s;CFG.pw=p;
+  localStorage.setItem('_fbUrl',CFG.url);localStorage.setItem('_fbSid',CFG.sid);localStorage.setItem('_fbPw',CFG.pw);
+  toast('✓ 設定已儲存');setTimeout(()=>showScreen('teacher-login'),700);
+}
+function doLogin(){if(_v('loginPw')!==CFG.pw){toast('密碼錯誤');return;}openTeacher();}
+function openTeacher(){showScreen('teacher');document.getElementById('tsLbl').textContent=`課程代碼：${CFG.sid}`;loadDash();}
+async function loadDash(){
+  const c=document.getElementById('subsC');c.innerHTML='<p style="text-align:center;padding:18px;color:var(--brown2)">載入中…</p>';
+  const data=await fbGet(`/sessions/${CFG.sid}/submissions`);
+  if(!data||!Object.keys(data).length){c.innerHTML='<p style="text-align:center;padding:18px;color:var(--brown2)">尚無組別提交</p>';renderScores([]);return;}
+  const groups=Object.values(data).sort((a,b)=>(b.score||0)-(a.score||0));
+  c.innerHTML=groups.map(g=>{
+    const done=g.completedStations||[];const ans=g.answers||{};
+    return `<div class="gc">
+      <div class="gc-hdr" onclick="this.nextElementSibling.classList.toggle('open')">
+        <div><div style="font-size:14px;font-weight:700">${g.groupName||'—'}（路線${g.route||'?'}）</div>
+        <div style="font-size:10px;color:#A09070;margin-top:1px">${g.lastUpdated||g.submittedAt||''}</div></div>
+        <div style="font-size:10px;color:var(--gold);text-align:right">${done.length}/6站<br>積分${g.score||0}分</div>
+      </div>
+      <div class="gcb">${done.map(sid=>{const s=STATIONS[sid];if(!s)return'';const ct=s.tasks.find(t=>t.type==='clue');const ca=ct?(ans[ct.id]||'—'):'—';return `<div class="gsr"><div class="gsl">${s.name}</div><div class="gsa">線索：${ca}</div></div>`;}).join('')}</div>
+    </div>`;
+  }).join('');
+  renderScores(groups);
+}
+function renderScores(groups){
+  const c=document.getElementById('scoresC');
+  if(!groups.length){c.innerHTML='<p style="color:var(--brown2);font-size:13px;padding:12px">尚無組別</p>';return;}
+  c.innerHTML=groups.map(g=>`
+    <div class="score-row">
+      <div style="flex:1;font-size:13px">${g.groupName||'—'}（路線${g.route||'?'}）</div>
+      <div style="font-size:16px;font-weight:700;color:var(--gold)" id="sp_${g.groupId}">${g.score||0}分</div>
+      <button class="score-btn give" onclick="addScore('${g.groupId}',20)">+20</button>
+      <button class="score-btn" onclick="addScore('${g.groupId}',-5)">-5</button>
+    </div>`).join('');
+}
+async function addScore(gid,pts){
+  const data=await fbGet(`/sessions/${CFG.sid}/submissions/${gid}`);if(!data)return;
+  const ns=(data.score||0)+pts;
+  await fbPut(`/sessions/${CFG.sid}/submissions/${gid}`,{...data,score:ns});
+  const el=document.getElementById('sp_'+gid);if(el)el.textContent=ns+'分';
+  toast(`✓ ${pts>0?'+':''}${pts}分已記錄`);
+}
+function switchTab(tab,el){
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tpanel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='subs')loadDash();
+}
+function showAdvisorSend(){document.getElementById('advisorSendPop').classList.add('show');}
+async function sendAdvisorMsg(){
+  const msg=_v('advCustom')||document.getElementById('advSel').value;
+  if(!msg){toast('請選擇或輸入訊息');return;}
+  const ok=await fbPut(`/sessions/${CFG.sid}/advisorMsg`,{msg,at:new Date().toLocaleString('zh-TW')});
+  if(ok){toast('✓ 訊息已發送');document.getElementById('advisorSendPop').classList.remove('show');}
+  else toast('⚠ 發送失敗，請確認Firebase設定');
+}
+
+// ══ ADVISOR ══
+function showAdvisor(msg){document.getElementById('advisorTxt').textContent=msg;document.getElementById('advisorPop').classList.add('show');}
+function closeAdvisor(){document.getElementById('advisorPop').classList.remove('show');}
+
+// ══ SCORE ══
+function updateScoreDisplay(){
+  const fs=document.getElementById('finalScore');if(fs)fs.textContent=S.score;
+}
+
+// ══ UTILS ══
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+  window.scrollTo(0,0);
+}
+function _v(id){return document.getElementById(id)?.value?.trim()||'';}
+let _tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2600);}
+
+// ══ INIT ══
+window.onload=()=>{
+  const u=localStorage.getItem('_fbUrl');
+  if(u&&document.getElementById('cfgUrl'))document.getElementById('cfgUrl').value=u;
+  const cs=localStorage.getItem('_fbSid')||'dadaocheng2026';
+  if(document.getElementById('cfgSid'))document.getElementById('cfgSid').value=cs;
+  if(loadLocal()&&S.startTime&&!S.endTime){
+    if(confirm('🔄 發現上次未完成的任務！\n是否繼續上次的進度？\n（選「取消」將清除紀錄重新開始）')){
+      const currentSid=S.order[S.idx];
+      if(currentSid==='visitor')showVisitor();
+      else if(currentSid==='dihua')showFinalStation();
+      else if(currentSid)showStation(currentSid);
+      else showSetup();
+    } else {localStorage.removeItem('_gameState');}
+  }
+  startPoll();
+};
+</script>
+</body>
+</html>
