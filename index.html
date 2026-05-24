@@ -356,6 +356,7 @@ textarea.inp{resize:vertical;min-height:80px;margin-bottom:0;font-size:16px}
   <button class="btn-done" id="btnDone" onclick="tryCompleteStation()" disabled><span id="btnTxt">請完成所有任務</span></button>
   <div class="botnav">
     <button class="nbtn" onclick="goBack()">← 上一站</button>
+    <button class="nbtn" onclick="editGroupData()">✏️ 修改資料</button>
     <button class="nbtn" id="navProg">0/6</button>
   </div>
 </div>
@@ -656,7 +657,7 @@ let S={
   checkinTime:null,checkinRank:0,
   startTime:null,endTime:null,
   puzzleSolved:false,qipaoUnlocked:false,
-  locked:false,
+  scored:{puzzle:false,finalCode:false,submit:false,checkin:false},
 };
 
 function saveLocal(){
@@ -740,10 +741,21 @@ function startMission(){
   ROLES.forEach(r=>{const n=_v('mi_'+r.id);if(n){S.roleAssign[r.id]=n;hasAny=true;}});
   const extra=_v('mi_影相2');if(extra)S.roleAssign['影相2']=extra;
   if(!hasAny){toast('請至少填入一位成員座號');return;}
-  S.order=ROUTES[S.route].stations;S.idx=0;
-  S.startTime=Date.now();
-  saveLocal();
-  showStation(S.order[0]);
+  // 如果已經開始，保留進度，只更新資料
+  if(S.startTime){
+    S.order=ROUTES[S.route].stations;
+    saveLocal();autoSave();
+    toast('✓ 商行資料已更新！');
+    const sid=S.order[S.idx];
+    if(sid==='visitor')showVisitor();
+    else if(sid==='dihua')showFinalStation();
+    else showStation(sid);
+  } else {
+    S.order=ROUTES[S.route].stations;S.idx=0;
+    S.startTime=Date.now();
+    saveLocal();
+    showStation(S.order[0]);
+  }
 }
 
 // ══ TASK HTML ══
@@ -970,6 +982,39 @@ function completeStation(){
   showClueReveal(sid);
 }
 
+function editGroupData(){
+  if(!confirm('返回修改商行資料？\n計時仍會繼續，路線和進度不會消失。'))return;
+  showSetup();
+  // 恢復已填的資料
+  setTimeout(()=>{
+    // 恢復路線選擇
+    if(S.route){
+      document.querySelectorAll('.route-card').forEach(c=>c.classList.remove('sel'));
+      document.getElementById('rc_'+S.route)?.classList.add('sel');
+    }
+    // 恢復商行名稱
+    const gn=document.getElementById('groupName');
+    if(gn)gn.value=S.group||'';
+    // 恢復職位座號
+    Object.entries(S.roleAssign).forEach(([rid,val])=>{
+      const rc=document.getElementById('roleC_'+rid);
+      const mr=document.getElementById('mr_'+rid);
+      const mi=document.getElementById('mi_'+rid);
+      if(rc&&!rc.classList.contains('sel')){rc.classList.add('sel');}
+      if(mr)mr.style.display='flex';
+      if(mi)mi.value=val;
+    });
+    // 恢復人數設定
+    if(S.roleAssign['影相2']){
+      setCount(6);
+      const mi2=document.getElementById('mi_影相2');
+      if(mi2)mi2.value=S.roleAssign['影相2'];
+    }
+    // 改變出發按鈕文字
+    const btn=document.querySelector('#setup .btn-p');
+    if(btn)btn.textContent='確認修改，繼續任務！';
+  },100);
+}
 function goBack(){
   if(S.idx>0){
     S.idx--;
@@ -1092,7 +1137,8 @@ async function doCheckin(){
     await fbPut(`/sessions/${CFG.sid}/checkins/${S.gid}`,{time:now,group:S.group,rank});
   }
   const pts=[20,15,10,5][rank-1]||5;
-  S.checkinRank=rank;S.score+=pts;updateScoreDisplay();
+  S.checkinRank=rank;
+  if(!S.scored.checkin){S.score+=pts;updateScoreDisplay();S.scored.checkin=true;}
   document.getElementById('btnCheckin').style.display='none';
   document.getElementById('checkinDone').classList.add('show');
   document.getElementById('rankDisplay').textContent=`第${rank}名報到！`;
@@ -1107,8 +1153,9 @@ function checkPuzzle(){
   const r=document.getElementById('puzzleResult');
   if(ans===960){
     r.textContent='✓ 密碼正確！前兩名組別優先換裝。';r.style.color='var(--green)';
-    S.score+=15;updateScoreDisplay();S.puzzleSolved=true;saveLocal();
-    toast('✓ 密碼正確！+15分');
+    if(!S.scored.puzzle){S.score+=15;updateScoreDisplay();S.scored.puzzle=true;}
+    S.puzzleSolved=true;saveLocal();
+    toast(S.scored.puzzle?'✓ 密碼正確！':'✓ 密碼正確！+15分');
   } else {
     r.textContent=`✗ 密碼錯誤（你的答案：${ans}），再想想看。`;r.style.color='var(--red)';
   }
@@ -1147,8 +1194,9 @@ function checkFinalCode(){
   if(code==='1924'){
     result.style.display='block';result.style.color='#2D5A27';
     result.textContent='✓ 密碼正確！時空通道開啟。歡迎回到2026年——帶著你們在1924年學到的一切。';
-    S.score+=20;updateScoreDisplay();saveLocal();autoSave();
-    toast('🎉 密碼正確！+20分，時空通道開啟！');
+    if(!S.scored.finalCode){S.score+=20;updateScoreDisplay();S.scored.finalCode=true;toast('🎉 密碼正確！+20分，時空通道開啟！');}
+    else{toast('✓ 密碼已驗證過了！');}
+    saveLocal();autoSave();
   } else {
     result.style.display='block';result.style.color='var(--red)';
     result.textContent='✗ 密碼錯誤。再想想——答案就藏在你們今天走過的每一步。';
@@ -1157,10 +1205,11 @@ function checkFinalCode(){
 
 async function submitMission(){
   if(!S.endTime)S.endTime=Date.now();
-  S.score+=30;updateScoreDisplay();
+  if(!S.scored.submit){S.score+=30;updateScoreDisplay();S.scored.submit=true;}
   const btn=document.getElementById('btnSubmit');
   const st=document.getElementById('ss');
   btn.disabled=true;btn.textContent='提交中…';
+  document.getElementById('btnSubmit').disabled=true;
   const payload={
     groupId:S.gid,groupName:S.group,route:S.route,roleAssign:S.roleAssign,
     stationOrder:S.order,completedStations:S.done,
