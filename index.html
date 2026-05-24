@@ -995,11 +995,13 @@ function showClueReveal(sid){
 }
 
 function showStationSelect(){
-  const remaining=['temple','ciSheng','tenRow'].filter(id=>!S.done.includes(id)&&id!==S.order[S.idx]);
   S.wrongs=0;
   const correct=S.order[S.idx+1];
+  // 正確答案一定要在選項裡
+  // 其他中間站（不含當前站和正確答案）作為干擾選項
+  const others=['temple','ciSheng','tenRow'].filter(id=>id!==correct&&id!==S.order[S.idx]);
   const fakes=['fake1','fake2','fake3'].sort(()=>Math.random()-.5);
-  let options=[...remaining];
+  let options=[correct,...others];
   for(const f of fakes){if(options.length>=5)break;options.push(f);}
   const shuffled=options.sort(()=>Math.random()-.5);
   document.getElementById('gi').textContent='';
@@ -1272,13 +1274,12 @@ window.onload=()=>{
   const cs=localStorage.getItem('_fbSid')||'dadaocheng2026';
   if(document.getElementById('cfgSid'))document.getElementById('cfgSid').value=cs;
   if(loadLocal()&&S.startTime&&!S.endTime){
-    if(confirm('🔄 發現上次未完成的任務！\n是否繼續上次的進度？\n（選「取消」將清除紀錄重新開始）')){
-      const currentSid=S.order[S.idx];
-      if(currentSid==='visitor')showVisitor();
-      else if(currentSid==='dihua')showFinalStation();
-      else if(currentSid)showStation(currentSid);
-      else showSetup();
-    } else {localStorage.removeItem('_gameState');}
+    // 自動恢復，不用confirm彈窗
+    const currentSid=S.order[S.idx];
+    if(currentSid==='visitor')showVisitor();
+    else if(currentSid==='dihua')showFinalStation();
+    else if(currentSid)showStation(currentSid);
+    else showSetup();
   }
   startPoll();
 };
